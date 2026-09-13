@@ -20,9 +20,9 @@ Kumamoto, Japan, December 14–17, 2026.
   `verify-chain.js` (§III.E). This export’s first record is 2026-08-08.
 - `coherence-check-spec/` — design-only predicate and event kinds
   (§III.E, §IV.D); stream not populated.
-- `fdd-records/` — windowed `self_improvements` / `fix_proposals` export
-  for Table I (§IV.B). The reachable store has **zero** rows in
-  9 May–8 June 2026.
+- `fdd-records/` — production `vega-pg` export for 9 May–8 June 2026
+  (§IV.B). 177 filed / 159 shipped by `proposed_by` (144 vega / 15 user /
+  0 team). Table I’s 118/39/2 does not recompute; 159 shipped does.
 
 Vega and Boole themselves (the runtime platform and coding agent) remain
 proprietary. The replication package releases the artifacts that let a

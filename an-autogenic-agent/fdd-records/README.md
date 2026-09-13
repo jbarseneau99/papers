@@ -1,34 +1,58 @@
-# FDD / self-improvement records
+# FDD / self-improvement records (production)
 
-Verifies **§IV.B** (Table I: shipped Findings by `proposed_by`, 9 May–8 June 2026; 118 / 39 / 2). The paper also cites per-Finding fields `proposed_at`, `state`, `close_path`.
+Verifies **§IV.B** Table I against **production** `vega-pg`
+(`mach33-research-tool-460917`, database `vega`, user `vega_app`).
 
-## Window queried
+Earlier empty files were from **UAT** (`mach33-uat-pg` via local proxy
+`:5440`), which only has rows from 2026-07-15. That was the wrong store.
 
-`proposed_at >= 2026-05-09` and `proposed_at < 2026-06-09` (inclusive of 8 June calendar day).
+## Query
 
-## Result of this export
+```sql
+-- filed in window (UTC)
+SELECT proposed_by, state, COUNT(*)
+FROM self_improvements
+WHERE proposed_at >= TIMESTAMPTZ '2026-05-09 00:00:00Z'
+  AND proposed_at <  TIMESTAMPTZ '2026-06-09 00:00:00Z'
+GROUP BY 1, 2;
 
-**Zero rows.** `self_improvements.jsonl` and `fix_proposals.jsonl` are empty on purpose.
+-- shipped in window (by proposed_at, not shipped_at)
+SELECT proposed_by, COUNT(*)
+FROM self_improvements
+WHERE proposed_at >= TIMESTAMPTZ '2026-05-09 00:00:00Z'
+  AND proposed_at <  TIMESTAMPTZ '2026-06-09 00:00:00Z'
+  AND state = 'shipped'
+GROUP BY 1;
+```
 
-The Postgres instance reachable for this drop contains:
+`schema_migrations`: `0012_self_improvements.sql` applied **2026-05-09 04:48Z**
+(same morning as the first Finding). No `DROP`/`TRUNCATE` of this table
+exists in `db/migrations/`.
 
-- `self_improvements`: n=29, `proposed_at` from **2026-07-15** to **2026-09-09**
-- `fix_proposals`: n=0
+## What a reviewer can recompute
 
-Table I’s 118 / 39 / 2 (159 shipped / 171 filed) **cannot be recomputed from this artifact**. The May–June ledger the paper reports is not in the operator-reachable store used here (likely a later UAT/prod split, or a store that predates this clone’s database). Reviewers should treat Table I as unreplicated until that historical store is attached.
+| | Paper Table I | This export (`proposed_by`) |
+| --- | ---: | ---: |
+| Filed in window | 171 | **177** (170 if `state <> 'merged'`) |
+| Shipped | **159** | **159** |
+| vega | 118 | **144** shipped / 161 filed |
+| user | 39 | **15** shipped / 16 filed |
+| team | 2 | **0** in window (6 all-time) |
 
-## Schema vs paper fields
+**159 shipped is real and matches.** 118 / 39 / 2 **does not** fall out of
+`proposed_by` on this table. Nearest accidental neighbour: 119
+vega-authored shipped rows with **no** `fix_proposals` row (not an
+enum; a join). Do not treat that as Table I.
 
-Emitted columns **when rows exist** (none here), after redaction of `title`, `body`, `user_note`, diffs, and comments:
+`close_path` is **not a column** (see `export-meta.json`).
+`associated_fix_proposal_id` is a **join** (`fix_proposals.finding_id`),
+included when a proposal exists.
 
-| Field | Source | Notes |
-| --- | --- | --- |
-| `id` | `self_improvements.id` | UUID |
-| `proposed_by` | `self_improvements.proposed_by` | CHECK `vega \| user \| team` — not an email |
-| `proposed_at` | `self_improvements.proposed_at` | |
-| `state` | `self_improvements.state` | `proposed → accepted → in_progress → shipped` (plus `rejected`, `deferred`, `needs_external_dev`) |
-| `shipped_at` | `self_improvements.shipped_at` | |
-| `associated_fix_proposal_id` | `fix_proposals.id` | join on `finding_id` |
-| `close_path` | — | **Not a column** on `self_improvements` in this schema. Paper name; do not invent values. |
+Redaction: `title`, `body`, `user_note`, `created_by_*`, diffs, comments
+omitted. Lifecycle fields kept.
 
-Human gates remain: accept is a PATCH; apply is `POST /api/coding/proposals/:id/approve` then `/apply` or `/apply-and-deploy`. Fully autonomous closes are zero by construction (see FDD lifecycle, not this empty file).
+## Files
+
+- `self_improvements.jsonl` — 177 rows
+- `fix_proposals.jsonl` — 62 proposals linked to those Findings
+- `export-meta.json` — counts and the Table I mismatch
