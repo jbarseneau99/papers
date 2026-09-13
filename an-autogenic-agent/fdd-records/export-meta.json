@@ -1,0 +1,14 @@
+{
+  "window": {
+    "gte": "2026-05-09T00:00:00Z",
+    "lt": "2026-06-09T00:00:00Z"
+  },
+  "query": "self_improvements.proposed_at in [2026-05-09, 2026-06-09)",
+  "self_improvements_in_window": 0,
+  "fix_proposals_in_window": 0,
+  "reachable_store_note": "The operator-reachable Postgres used for this export has self_improvements from 2026-07-15 through 2026-09-09 (n=29) and fix_proposals n=0. The May 9\u2013June 8 window is empty in this store. Table I (118/39/2, 159/171) cannot be recomputed from this export.",
+  "redaction": "title, body, user_note, rationale, diff, comments omitted. proposed_by kept (enum: vega|user|team).",
+  "missing_columns": [
+    "close_path does not exist on self_improvements; associated_fix_proposal_id would be fix_proposals.id joined on finding_id"
+  ]
+}

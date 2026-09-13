@@ -12,17 +12,17 @@ Kumamoto, Japan, December 14–17, 2026.
 - `paper.ast.json` — canonical AST.
 - `refs.bib` — bibliography.
 - `figures/` — figure PDFs and SVGs.
-- `ontology/` — snapshot of the Vega ontological catalog referenced in §II.
-  (uploaded on release of replication package)
-- `migrations/` — enum-locking schema migrations (0078 claim_type,
-  0096 entities.type) referenced in §II.B.
-  (uploaded on release of replication package)
-- `instrumentation/` — the `M33-VEGA-INST-001` chain (append-only,
-  SHA-256-hashed JSONL).
-  (uploaded on release of replication package)
-- `coherence-check-spec/` — the coherence-check event-stream design
-  specification referenced in §III.E as future-work instrumentation.
-  (uploaded on release of replication package)
+- `ontology/` — HEAD snapshot of `lib/proto/classes.js` + class modules
+  and `ontology-summary.json` (§II.B).
+- `migrations/` — `0078_epistemic_graph.sql` (`claim_type`) and
+  `0096_entity_ontology.sql` (`entities.type`) (§II.B).
+- `instrumentation/` — `M33-VEGA-INST-001` SHA-256 JSONL chain +
+  `verify-chain.js` (§III.E). This export’s first record is 2026-08-08.
+- `coherence-check-spec/` — design-only predicate and event kinds
+  (§III.E, §IV.D); stream not populated.
+- `fdd-records/` — windowed `self_improvements` / `fix_proposals` export
+  for Table I (§IV.B). The reachable store has **zero** rows in
+  9 May–8 June 2026.
 
 Vega and Boole themselves (the runtime platform and coding agent) remain
 proprietary. The replication package releases the artifacts that let a
