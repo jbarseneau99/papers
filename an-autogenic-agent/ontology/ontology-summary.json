@@ -1,0 +1,872 @@
+{
+  "source_commit": "1ac5daffd122bd29cce44d457d4b0a44f1b3292d",
+  "source_commit_short": "1ac5daff",
+  "source_commit_date": "2026-09-10T12:43:12-04:00",
+  "source_path": "lib/proto/classes.js",
+  "declared_classes": 107,
+  "with_machine_schema": 105,
+  "state_counts": {
+    "total": 107,
+    "planned": 0,
+    "procedural": 1,
+    "instance": 106
+  },
+  "classes": [
+    {
+      "class_name": "Faculty",
+      "class_id": "faculty",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Trait",
+      "class_id": "trait",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Value",
+      "class_id": "value",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Goal",
+      "class_id": "goal",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "AffectState",
+      "class_id": "affect-state",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "MemoryPart",
+      "class_id": "memory-part",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "MemorySystem",
+      "class_id": "memory-system",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Register",
+      "class_id": "register",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "MemoryTurn",
+      "class_id": "memory-turn",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Episode",
+      "class_id": "episode",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "SessionDigest",
+      "class_id": "session-digest",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "TimePeriod",
+      "class_id": "time-period",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "LifeProfile",
+      "class_id": "life-profile",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "LifeEra",
+      "class_id": "life-era",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "LifeEvent",
+      "class_id": "life-event",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Idea",
+      "class_id": "idea",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ManifoldLink",
+      "class_id": "manifold-link",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Capability",
+      "class_id": "capability",
+      "discipline": "psychology",
+      "discipline_public_name": "Mind",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Subagent",
+      "class_id": "subagent",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Code",
+      "class_id": "code",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "BasalGanglia",
+      "class_id": "basal-ganglia",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Thalamus",
+      "class_id": "thalamus",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Attention",
+      "class_id": "attention",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Chat",
+      "class_id": "chat",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Voice",
+      "class_id": "voice-organ",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "VoiceProvider",
+      "class_id": "voice-provider",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "DeliveryMark",
+      "class_id": "delivery-mark",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Expression",
+      "class_id": "expression",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ReflexClip",
+      "class_id": "reflex-clip",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Loop",
+      "class_id": "loop-class",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "LoopStep",
+      "class_id": "loop-step-class",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "CanonicalLoop",
+      "class_id": "canonical-loop-class",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "RaVaRStep",
+      "class_id": "ravar-step-class",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "DeclaredRaVaRLoop",
+      "class_id": "declared-ravar-loop-class",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "TelemetryEvent",
+      "class_id": "telemetry-event",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Relation",
+      "class_id": "relation",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "RelationMemory",
+      "class_id": "relation-memory",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Finding",
+      "class_id": "finding",
+      "discipline": "ontogeny",
+      "discipline_public_name": "Growth",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "AutogenicCycle",
+      "class_id": "autogenic-cycle",
+      "discipline": "ontogeny",
+      "discipline_public_name": "Growth",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Session",
+      "class_id": "session",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ProtoClaim",
+      "class_id": "proto-claim",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Inquiry",
+      "class_id": "inquiry",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ClaimEnvelope",
+      "class_id": "claim-envelope",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "SourceQuality",
+      "class_id": "source-quality",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "EpistemicNode",
+      "class_id": "epistemic-node",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "EpistemicEdge",
+      "class_id": "epistemic-edge",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "EpistemicEvent",
+      "class_id": "epistemic-event",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "BeliefEdge",
+      "class_id": "belief-edge",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Draft",
+      "class_id": "draft",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "EditorialElement",
+      "class_id": "editorial-element",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Artifact",
+      "class_id": "artifact",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "RenderElement",
+      "class_id": "render-element",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "RenderContext",
+      "class_id": "render-context",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "RenderRequest",
+      "class_id": "render-request",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "RenderResult",
+      "class_id": "render-result",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ElementRenderer",
+      "class_id": "element-renderer",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "procedural"
+    },
+    {
+      "class_name": "RenderArtifact",
+      "class_id": "render-artifact",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "OntologyClass",
+      "class_id": "ontology-class",
+      "discipline": "meta",
+      "discipline_public_name": "Meta",
+      "has_machine_schema": false,
+      "state": "instance"
+    },
+    {
+      "class_name": "Discipline",
+      "class_id": "discipline",
+      "discipline": "meta",
+      "discipline_public_name": "Meta",
+      "has_machine_schema": false,
+      "state": "instance"
+    },
+    {
+      "class_name": "Graph",
+      "class_id": "graph",
+      "discipline": "meta",
+      "discipline_public_name": "Meta",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Node",
+      "class_id": "node",
+      "discipline": "meta",
+      "discipline_public_name": "Meta",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Edge",
+      "class_id": "edge",
+      "discipline": "meta",
+      "discipline_public_name": "Meta",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Channel",
+      "class_id": "channel",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Message",
+      "class_id": "message",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "MessagePriority",
+      "class_id": "message-priority",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Membership",
+      "class_id": "membership",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Presence",
+      "class_id": "presence",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Summon",
+      "class_id": "summon",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Reaction",
+      "class_id": "reaction",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Pin",
+      "class_id": "pin",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ReadCursor",
+      "class_id": "read-cursor",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Attachment",
+      "class_id": "attachment",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "LinkPreview",
+      "class_id": "link-preview",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "CallTranscript",
+      "class_id": "call-transcript",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "CallSummary",
+      "class_id": "call-summary",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "BusEvent",
+      "class_id": "bus-event",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Lifecycle",
+      "class_id": "lifecycle",
+      "discipline": "ontogeny",
+      "discipline_public_name": "Growth",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "TransitionEvent",
+      "class_id": "transition-event",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Workflow",
+      "class_id": "workflow",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Decision",
+      "class_id": "decision",
+      "discipline": "ontogeny",
+      "discipline_public_name": "Growth",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ActionItem",
+      "class_id": "action-item",
+      "discipline": "ontogeny",
+      "discipline_public_name": "Growth",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Place",
+      "class_id": "place",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Commons",
+      "class_id": "commons",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "HostContract",
+      "class_id": "host-contract",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Entity",
+      "class_id": "entity",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "EntityAttention",
+      "class_id": "entity-attention",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "AttentionClaim",
+      "class_id": "attention-claim",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Principal",
+      "class_id": "principal",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Designation",
+      "class_id": "designation",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "AuthSession",
+      "class_id": "auth-session",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "PasskeyCredential",
+      "class_id": "passkey-credential",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "EpistemicScope",
+      "class_id": "epistemic-scope",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Corroboration",
+      "class_id": "corroboration",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "InstitutionalBelief",
+      "class_id": "institutional-belief",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ToolExecution",
+      "class_id": "tool-execution",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Prompt",
+      "class_id": "prompt",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "PromptBlock",
+      "class_id": "prompt-block",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Vital",
+      "class_id": "vital",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Model",
+      "class_id": "model",
+      "discipline": "anatomy",
+      "discipline_public_name": "Body",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "ModelConfig",
+      "class_id": "model-config",
+      "discipline": "meta",
+      "discipline_public_name": "Meta",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "SyncCursor",
+      "class_id": "sync-cursor",
+      "discipline": "physiology",
+      "discipline_public_name": "Functioning",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "DocumentAST",
+      "class_id": "document-ast",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "DocumentIR",
+      "class_id": "document-ir",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Citation",
+      "class_id": "citation",
+      "discipline": "documents",
+      "discipline_public_name": "Work Product",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "BoundIR",
+      "class_id": "bound-ir",
+      "discipline": "epistemics",
+      "discipline_public_name": "Knowledge",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Meeting",
+      "class_id": "meeting",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    },
+    {
+      "class_name": "Attendance",
+      "class_id": "attendance",
+      "discipline": "sociology",
+      "discipline_public_name": "Relations",
+      "has_machine_schema": true,
+      "state": "instance"
+    }
+  ]
+}
