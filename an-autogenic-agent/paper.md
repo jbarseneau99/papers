@@ -1,5 +1,5 @@
 \begin{abstract}
-Autonomous software agents rely on fixed ontological structures, rendering them incapable of self-directed architectural expansion when encountering novel tasks. This paper presents autogeny---an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic/FDD lifecycle whose accept and proposal approve/apply-or-deploy steps require a human. Operating within a closed requirements-code-telemetry loop, the agent detects ``ontic breaks'' when a requirement fits no existing class in the enum-locked catalog; the diff hits a locked or unmapped path and the Finding is refused (\texttt{needs\_external\_dev}) rather than instantiated under any default kind. To maintain execution integrity, the architecture separates concerns: an invariant kernel enforces conformance at construction (frozen validate and composition, ADR 0012), and the FDD lifecycle carries approve, atomic apply, and supervised restart. After apply-and-deploy, the FDD lifecycle auto-rolls back a proposal on boot-and-health timeout or when a reflection-verify detector still matches the Finding's target; catalog-level rollback is an operator action. We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\texttt{self\_improvements}, \texttt{fix\_proposals}: \texttt{proposed\_at}, state, close path), isolating the structural conditions that facilitate successful closure from those causing modification failures. The result is a kernel-guarded, FDD-gated control loop that provides a foundation for human-supervised capability expansion and offers a formal model for self-improving agent architectures.
+Autonomous software agents rely on fixed ontological structures, rendering them incapable of self-directed architectural expansion when encountering novel tasks. This paper presents autogeny---an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic/FDD lifecycle whose accept and proposal approve/apply-or-deploy steps require a human. Operating within a closed requirements-code-telemetry loop, the agent detects ``ontic breaks'' when a requirement fits no existing class in the enum-locked catalog; the diff hits a locked or unmapped path and the Finding is refused (\texttt{needs\_external\_dev}) rather than instantiated under any default kind. To maintain execution integrity, the architecture separates concerns: an invariant kernel enforces conformance at construction (frozen validate and composition, ADR 0012), and the FDD lifecycle carries approve, atomic apply, and supervised restart. After apply-and-deploy, the FDD lifecycle auto-rolls back a proposal on boot-and-health timeout or when a reflection-verify detector still matches the Finding's target; catalog-level rollback is an operator action. We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\texttt{self\_improvements}, \texttt{fix\_proposals}: \texttt{proposed\_at}, \texttt{state}, \texttt{proposed\_by}, join on \texttt{finding\_id}), isolating the structural conditions that facilitate successful closure from those causing modification failures. The result is a kernel-guarded, FDD-gated control loop that provides a foundation for human-supervised capability expansion and offers a formal model for self-improving agent architectures.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -150,8 +150,7 @@ class module, tests, and a state flip together (recipe in ADR 0014).
 The disciplines carry vocabularies of their own. Epistemics holds
 `epistemic_nodes` with a nine-value `claim_type` enum for Toulmin
 argument structure [@toulmin1958]. Physiology holds `TelemetryEvent`,
-`Fault`, `ToolExecution`, each enum-locked. Ontogeny holds `Finding`
-with an enum-locked `close_path`. Sociology holds `Channel` with a
+`Fault`, `ToolExecution`, each enum-locked. Ontogeny holds `Finding` with an enum-locked lifecycle `state` (`proposed`, `accepted`, `in_progress`, `shipped`, `rejected`, `deferred`, `needs_external_dev`, `merged`). Sociology holds `Channel` with a
 `visibility` enum (*public*, *private*, *DM*). Meta holds the state
 ladder as an enum (*planned*, *procedural*, *instance*). Anatomy holds
 the runtime organs: `Process`, `Sensor`, `Effector`, `Store`, `Clock`,
@@ -209,7 +208,7 @@ distinction is precise.
 
 An *ontology instance* is a change the current catalog can already
 express. A new `Message` on an existing `Channel` (Sociology). A new
-`Finding` whose `close_path` is one of the enumerated values (Ontogeny).
+`Finding` whose `state` reaches `shipped` through the enumerated transitions (Ontogeny).
 A new epistemic node of `claim_type` *contention* (Epistemics). A new
 `Draft` against an existing `Style` (Authorship). A new `TelemetryEvent`
 row emitted by an existing `Sensor` (Anatomy). Each is a new row against
@@ -365,7 +364,7 @@ Finding is judged coherent; otherwise rejected. Every step is a
 `\begin{figure}[!t]`{=latex}
 \centering
 \includegraphics[width=0.85\columnwidth]{figures/fig-throughput}
-\caption{Cumulative Findings shipped by author, 9 May -- 8 Jun 2026 (Vega 118, user 39, team 2). Vega dominates; user curve is steady.}\label{fig:throughput}
+\caption{Cumulative Findings shipped by author, 9 May -- 8 Jun 2026 (Vega 144, user 15). Vega dominates.}\label{fig:throughput}
 `\end{figure}`{=latex}
 
 ## The coding-agent loop {#sec:loop}
@@ -417,10 +416,7 @@ that event stream is designed but not populated over the reported
 window. Population is future work; §`\ref{sec:threats}`{=latex}
 discloses the gap.
 
-The replication package releases the ontology-catalog snapshot, the
-enum-locking schema migrations, the `M33-VEGA-INST-001` chain, the coherence-check design
-specification, and the paper source; Vega and Boole themselves remain
-proprietary.
+The replication package (`\url{https://github.com/jbarseneau99/papers/tree/main/an-autogenic-agent}`{=latex}) releases the ontology-catalog snapshot, the enum-locking schema migrations, the `M33-VEGA-INST-001` chain, the coherence-check design specification, and the paper source; Vega and Boole themselves remain proprietary.
 
 # Results and Discussion {#sec:results}
 
@@ -436,35 +432,34 @@ holds/fails counts over the same window is designed
 those counts is future work.
 
 The shape carries the argument. Vega's curve rises through the window
-without a stall. The user curve rises with it at a flat slope: humans
-stayed in the pipeline the whole time. Fully autonomous closes are
-absent by design, not by failure.
+without a stall; user proposals arrive at a low, steady rate. Fully
+autonomous closes are absent by design, not by failure.
 
 ## Attribution {#sec:res-attribution}
 
-The run produced 171 Findings across thirty consecutive days (9 May -- 8
-June 2026). 159 shipped through the FDD lifecycle. Every shipped Finding
-crossed the principal-review gate by construction. **Fully autonomous
-closes were zero.** The 159 shipped break down by author
-(Table `\ref{tab:findings-by-path}`{=latex}, Fig. `\ref{fig:throughput}`{=latex}): 118 agent-authored
-end-to-end (74%), 39 human-authored agent-assisted (25%), 2
-team-decomposed (1%).
+The run produced 177 Findings across thirty consecutive days (9 May -- 8
+June 2026), of which 159 shipped through the FDD lifecycle. Every
+shipped Finding crossed the principal-review gate by construction.
+**Fully autonomous closes were zero.** The 159 shipped break down by
+`proposed_by` (Table `\ref{tab:findings-by-path}`{=latex}, Fig. `\ref{fig:throughput}`{=latex}): 144 proposed by the
+agent (91%), 15 by a user (9%), 0 by team-decomposition.
 
-The attribution claim rests on the agent-authored fraction: 118 Findings
-for which Vega produced the fix and a human clicked Apply. The gate is the
-safety contribution named in §`\ref{sec:ontic-gate}`{=latex}. The
-registry's per-Finding fields (`proposed_at`, `state`, `close_path`,
-reflection targets) support the structural-conditions analysis the
-abstract promises; the per-condition table ships with the replication
-package.
+Attribution is by `proposed_by`: 144 agent-proposed, 15 user-proposed.
+All 159 crossed the same principal-review gate
+(§`\ref{sec:ontic-gate}`{=latex}); a fix-proposal join on `finding_id`
+covers 15 shipped rows. The registry's per-Finding fields
+(`proposed_at`, `state`, `proposed_by`, `fix_proposals.finding_id`)
+support the structural-conditions analysis the abstract promises;
+the per-condition table ships with the replication package.
 
 
   Proposed by                                     Shipped
   --------------------------------------- ---------------
-  vega (agent-authored, human-shipped)                118
-  user (human-authored, agent-assisted)                39
-  team (team-filed, sub-Findings)                       2
-  Total shipped / filed in window                159 / 171
+    vega                                                144
+  user                                                 15
+  team                                                  0
+  Total shipped / filed in window                159 / 177
+
 
   : Shipped Findings by author (proposed_by), counts from the Vega FDD store, 9 May -- 8 June 2026 window {#tab:findings-by-path}
 
@@ -479,11 +474,9 @@ This paper describes the detector; empirical validation depends on the
 coherence-check event stream of §`\ref{sec:measurement}`{=latex} and is
 future work.
 
-The detector's limit is what the ontology can name. It surfaces gaming
+The detector's limit is what the ontology can name: it surfaces gaming
 that violates a declared constraint, not gaming that satisfies every
-declared constraint while missing an undeclared one. That limit is a
-property of the ontology-as-declaration approach and returns in
-§`\ref{sec:threats}`{=latex}.
+declared constraint while missing an undeclared one.
 
 ## Threats to validity {#sec:threats}
 
@@ -557,8 +550,8 @@ becomes coherence across the three edges of a triad that includes not
 only the code and the tests but the requirement itself.
 
 We ran the alternative on Vega for thirty consecutive days. Vega filed
-171 Findings and shipped 159 through the FDD lifecycle. 118 of those
-were agent-authored end-to-end. Every one crossed the principal-review
+177 Findings and shipped 159 through the FDD lifecycle. 144 of those
+were proposed by the agent, 15 by a user. Every one crossed the principal-review
 gate. The triad held throughout. The gate is the mechanism.
 
 Whether the approach generalizes beyond the platform we built is an open

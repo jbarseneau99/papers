@@ -52,7 +52,7 @@
             },
             {
               "type": "sentence",
-              "text": "We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\\texttt{self\\_improvements}, \\texttt{fix\\_proposals}: \\texttt{proposed\\_at}, state, close path), isolating the structural conditions that facilitate successful closure from those causing modification failures."
+              "text": "We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\\texttt{self\\_improvements}, \\texttt{fix\\_proposals}: \\texttt{proposed\\_at}, \\texttt{state}, \\texttt{proposed\\_by}, join on \\texttt{finding\\_id}), isolating the structural conditions that facilitate successful closure from those causing modification failures."
             },
             {
               "type": "sentence",
@@ -574,7 +574,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Ontogeny holds `Finding` with an enum-locked `close_path`."
+                    "text": "Ontogeny holds `Finding` with an enum-locked lifecycle `state` (`proposed`, `accepted`, `in_progress`, `shipped`, `rejected`, `deferred`, `needs_external_dev`, `merged`)."
                   },
                   {
                     "type": "sentence",
@@ -831,7 +831,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "A new `Finding` whose `close_path` is one of the enumerated values (Ontogeny)."
+                    "text": "A new `Finding` whose `state` reaches `shipped` through the enumerated transitions (Ontogeny)."
                   },
                   {
                     "type": "sentence",
@@ -1350,7 +1350,7 @@
               {
                 "type": "figure",
                 "label": "fig:throughput",
-                "caption": "Cumulative Findings shipped by author, 9 May -- 8 Jun 2026 (Vega 118, user 39, team 2). Vega dominates; user curve is steady.",
+                "caption": "Cumulative Findings shipped by author, 9 May -- 8 Jun 2026 (Vega 144, user 15). Vega dominates.",
                 "placement": "!t",
                 "spanColumns": false,
                 "source": "figures/fig-throughput",
@@ -1551,7 +1551,7 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The replication package releases the ontology-catalog snapshot, the enum-locking schema migrations, the `M33-VEGA-INST-001` chain, the coherence-check design specification, and the paper source; Vega and Boole themselves remain proprietary."
+                    "text": "The replication package (\\url{https://github.com/jbarseneau99/papers/tree/main/an-autogenic-agent}) releases the ontology-catalog snapshot, the enum-locking schema migrations, the `M33-VEGA-INST-001` chain, the coherence-check design specification, and the paper source; Vega and Boole themselves remain proprietary."
                   }
                 ]
               }
@@ -1633,11 +1633,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Vega's curve rises through the window without a stall."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "The user curve rises with it at a flat slope: humans stayed in the pipeline the whole time."
+                    "text": "Vega's curve rises through the window without a stall; user proposals arrive at a low, steady rate."
                   },
                   {
                     "type": "sentence",
@@ -1660,11 +1656,11 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The run produced 171 Findings across thirty consecutive days (9 May -- 8 June 2026). 159 shipped through the FDD lifecycle."
+                    "text": "The run produced 177 Findings across thirty consecutive days (9 May -- 8 June 2026), of which 159 shipped through the FDD lifecycle."
                   },
                   {
                     "type": "sentence",
-                    "text": "Every shipped Finding crossed the principal-review gate by construction. **Fully autonomous closes were zero.** The 159 shipped break down by author (Table \\ref{tab:findings-by-path}, Fig. \\ref{fig:throughput}): 118 agent-authored end-to-end (74%), 39 human-authored agent-assisted (25%), 2 team-decomposed (1%).",
+                    "text": "Every shipped Finding crossed the principal-review gate by construction. **Fully autonomous closes were zero.** The 159 shipped break down by `proposed_by` (Table \\ref{tab:findings-by-path}, Fig. \\ref{fig:throughput}): 144 proposed by the agent (91%), 15 by a user (9%), 0 by team-decomposition.",
                     "refIds": [
                       "r1",
                       "r2"
@@ -1691,18 +1687,18 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The attribution claim rests on the agent-authored fraction: 118 Findings for which Vega produced the fix and a human clicked Apply."
+                    "text": "Attribution is by `proposed_by`: 144 agent-proposed, 15 user-proposed."
                   },
                   {
                     "type": "sentence",
-                    "text": "The gate is the safety contribution named in §\\ref{sec:ontic-gate}.",
+                    "text": "All 159 crossed the same principal-review gate (§\\ref{sec:ontic-gate}); a fix-proposal join on `finding_id` covers 15 shipped rows.",
                     "refIds": [
                       "r1"
                     ]
                   },
                   {
                     "type": "sentence",
-                    "text": "The registry's per-Finding fields (`proposed_at`, `state`, `close_path`, reflection targets) support the structural-conditions analysis the abstract promises; the per-condition table ships with the replication package."
+                    "text": "The registry's per-Finding fields (`proposed_at`, `state`, `proposed_by`, `fix_proposals.finding_id`) support the structural-conditions analysis the abstract promises; the per-condition table ships with the replication package."
                   }
                 ],
                 "references": [
@@ -1719,7 +1715,7 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "Proposed by Shipped --------------------------------------- --------------- vega (agent-authored, human-shipped) 118 user (human-authored, agent-assisted) 39 team (team-filed, sub-Findings) 2 Total shipped / filed in window 159 / 171"
+                    "text": "Proposed by Shipped --------------------------------------- --------------- vega 144 user 15 team 0 Total shipped / filed in window 159 / 177"
                   }
                 ]
               },
@@ -1784,26 +1780,7 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The detector's limit is what the ontology can name."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "It surfaces gaming that violates a declared constraint, not gaming that satisfies every declared constraint while missing an undeclared one."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "That limit is a property of the ontology-as-declaration approach and returns in §\\ref{sec:threats}.",
-                    "refIds": [
-                      "r1"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:threats"
+                    "text": "The detector's limit is what the ontology can name: it surfaces gaming that violates a declared constraint, not gaming that satisfies every declared constraint while missing an undeclared one."
                   }
                 ]
               }
@@ -2128,7 +2105,7 @@
               },
               {
                 "type": "sentence",
-                "text": "Vega filed 171 Findings and shipped 159 through the FDD lifecycle. 118 of those were agent-authored end-to-end."
+                "text": "Vega filed 177 Findings and shipped 159 through the FDD lifecycle. 144 of those were proposed by the agent, 15 by a user."
               },
               {
                 "type": "sentence",
