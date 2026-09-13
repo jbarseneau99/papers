@@ -1,0 +1,17 @@
+paper.aux
+paper.bbl
+paper.blg
+paper.log
+paper.out
+paper.toc
+.palette/
+.backup/
+.newton/
+*.md.draft
+*.tex.draft
+*.ast.json.draft
+paper.md.pandoc-snapshot
+paper.tex.bak.pre-md-migration
+paper.tex.direct
+paper.direct.pdf
+paper.ast.json.pre-normalize

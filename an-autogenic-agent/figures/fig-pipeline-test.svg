@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+  <rect x="25" y="75" width="75" height="50" fill="none" stroke="#000" stroke-width="1"/>
+  <text x="62.5" y="105" font-family="Inter, Helvetica, Arial, sans-serif" font-size="12" text-anchor="middle" fill="#000">MD</text>
+  <rect x="125" y="75" width="75" height="50" fill="none" stroke="#000" stroke-width="1"/>
+  <text x="162.5" y="105" font-family="Inter, Helvetica, Arial, sans-serif" font-size="12" text-anchor="middle" fill="#000">TeX</text>
+  <rect x="225" y="75" width="75" height="50" fill="none" stroke="#000" stroke-width="1"/>
+  <text x="262.5" y="105" font-family="Inter, Helvetica, Arial, sans-serif" font-size="12" text-anchor="middle" fill="#000">PDF</text>
+  <line x1="100" y1="100" x2="123" y2="100" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+  <polygon points="125,100 115,106 115,94" fill="#000"/>
+  <line x1="200" y1="100" x2="223" y2="100" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+  <polygon points="225,100 215,106 215,94" fill="#000"/>
+</svg>
