@@ -1,6 +1,7 @@
 \begin{abstract}
-Autonomous software agents commonly rely on fixed ontological structures, which can limit self-directed architectural expansion when a task requires vocabulary the agent does not carry. This paper presents autogeny, an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic/FDD lifecycle whose accept and proposal approve/apply-or-deploy steps require a human. Operating within a closed requirements-code-telemetry loop, the agent detects ``ontic breaks'' when a requirement fits no existing class in the enum-locked catalog; the diff hits a locked or unmapped path and the Finding is refused (\texttt{needs\_external\_dev}) rather than instantiated under any default kind. To maintain execution integrity, the architecture separates concerns: an invariant kernel enforces conformance at construction (frozen validate and composition, ADR 0012), and the FDD lifecycle carries approve, atomic apply, and supervised restart. After apply-and-deploy, the FDD lifecycle auto-rolls back a proposal on boot-and-health timeout or when a reflection-verify detector still matches the Finding's target; catalog-level rollback is an operator action. We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\texttt{self\_improvements}, \texttt{fix\_proposals}: \texttt{proposed\_at}, \texttt{state}, \texttt{proposed\_by}, join on \texttt{finding\_id}), recording the structural conditions of each closure and their
-modification failures. The result is a kernel-guarded, FDD-gated control loop that provides a foundation for human-supervised capability expansion and offers an operational model for self-improving agent architectures.
+Autonomous software agents commonly rely on fixed ontological structures, which can limit self-directed architectural expansion when a task requires vocabulary the agent does not carry. This paper presents autogeny, an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic lifecycle whose accept and proposal approve/apply-or-deploy steps require a human. Operating within a closed requirements-code-telemetry loop, the agent detects ``ontic breaks'' when a requirement fits no existing class in the enum-locked catalog; the diff hits a locked or unmapped path and the Finding is refused (\texttt{needs\_external\_dev}) rather than instantiated under any default kind. To maintain execution integrity, the architecture separates concerns: an invariant kernel enforces conformance at construction (frozen validate and composition, ADR 0012), and the lifecycle carries approve, atomic apply, and supervised restart. After apply-and-deploy, the lifecycle auto-rolls back a proposal on boot-and-health timeout or when a reflection-verify detector still matches the Finding's target; catalog-level rollback is an operator action. We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\texttt{self\_improvements}, \texttt{fix\_proposals}: \texttt{proposed\_at}, \texttt{state}, \texttt{proposed\_by}, join on \texttt{finding\_id}), recording available lifecycle events (proposal opening, state
+transitions) with ontology classification of the closure where the
+affected-path record is present. The result is a kernel-guarded, workflow-gated control loop that provides a foundation for human-supervised capability expansion and offers an operational model for self-improving agent architectures.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -20,8 +21,9 @@ Extension of that knowledge by the agent is not part of the shipped design. This
 The assumption is that the structure of code is latent. The codebase is
 a corpus of text. The relationships between its parts, which function
 calls which, which module depends on which, what breaks if a particular
-symbol changes, are not written down anywhere the agent can consult
-directly. The agent must rediscover them each session, by search. Two
+symbol changes, are not written down in a form the agent consults
+directly at runtime; AST search and code graphs offer partial
+structural access (§`\ref{sec:related}`{=latex}). The agent must rediscover them each session, by search. Two
 instruments dominate. *Grep*, in its modern regex-and-context-window
 forms, scans the text for lexical matches. *Embedding indexes* project
 functions and files into a vector space and retrieve nearest neighbors
@@ -77,30 +79,19 @@ thirty days on a production agent platform (§`\ref{sec:results}`{=latex}).
 
 `\begin{figure}[!t]`{=latex}
 \centering
-\includegraphics[width=\columnwidth]{figures/fig-mechanism}
-\caption{Autogenic loop mechanism, as designed. Instance path: agent is autonomous at implementation; kernel validation (ADR 0012) is structural; the coherence check on completion is designed but was not populated over the reported window (§IV-D). Ontic-break path: agent-authored FixProposal, then human approval, atomic apply, and supervised restart (behavioral). Boot-and-health rollback is automated, actor-configured, not kernel-structural. Access-control gap (§IV-D): a sub-agent with repo write and \texttt{DATABASE\_URL} can bypass the workflow via \texttt{migrate}.}\label{fig:mechanism}
+\includegraphics[width=\columnwidth]{figures/fig-ontology}
+\caption{Vega ontology catalog, 3D force layout. Eight discipline clusters with within- and cross-discipline edges; Anatomy in the foreground (ring). Representative Anatomy classes are labeled to show both the functional runtime organs and the code substrate (§II-B).}\label{fig:ontology}
 `\end{figure}`{=latex}
 
 ## Reference architecture {#sec:reference}
 
-The architecture is design-inspired by biological cognition; the
-mapping below is analogy, not a functional-equivalence claim. Every
-neural structure in the human brain accumulated across five hundred
-million years of evolution. The build order fixes a dependency order: the oldest
-structures handle the most fundamental problems and the newest the most
-abstract. Ten mind components mirror ten neural structures: Cognitive Fabric --
-Cerebral Cortex, Binding Engine -- Hippocampus, Evaluation Engine --
-Amygdala, Selection Gate -- Basal Ganglia, Router -- Thalamus,
-Prediction Engine -- Cerebellum, Conflict Monitor -- Anterior Cingulate,
-Drive System -- VTA / dopamine circuits, Initiative Engine -- Pre-SMA,
-Interconnect -- White Matter. The mapping supplies naming and rough
-functional intent for each component; it is not a claim of
-neuroscientific equivalence.
-
-The architecture is *autogenic*: its specification is embedded in the
-running system. Six axioms follow (unity, emergence, identity,
-embodiment, regeneration, determination). The system carries its own
-specification and participates in its own construction.
+The architecture is design-inspired by biological cognition: ten mind
+components named after ten neural structures (Cognitive Fabric at the
+cortex, Interconnect at the white matter, and eight between). The mapping is
+analogy for naming and rough functional intent, not a claim of
+neuroscientific equivalence. The architecture is *autogenic*: its
+specification is embedded in the running system; six axioms follow
+(unity, emergence, identity, embodiment, regeneration, determination).
 
 Three body systems ground the ten mind components: Sensory (input),
 Motor (output), and Interoceptive (internal state). The Interoceptive
@@ -111,10 +102,11 @@ whose instances are the actual organs of the running body: `Process`,
 
 ## Ontology as declaration {#sec:ontology}
 
-In Vega, the ontology is a *catalog of classes*. One hundred and seven
-declared classes at the time of writing, one hundred and five with an
-explicit machine schema, each defined in `lib/proto/*.js` and registered
-in a single manifest. The formal catalog was created on 6 July 2026.
+In Vega, the ontology is a *catalog of classes*: one hundred and
+fourteen declared across eight disciplines at the time of writing
+(per-discipline counts in Fig.~`\ref{fig:ontology}`{=latex}), one
+hundred and twelve with a machine schema, each defined in
+`lib/proto/*.js` and registered in a single manifest. The formal catalog was created on 6 July 2026.
 The ontology structure during the reported run window (May-June 2026) was
 carried informally as prompts, faculties, tool schemas, and migrations,
 and the class-count trajectory through July and August is 40, then 68,
@@ -163,6 +155,12 @@ domain outside the code. It is a set of declarations that prescribe what
 the code and the agent can do next.
 Fig. `\ref{fig:mechanism}`{=latex} shows the loop's mechanism.
 
+`\begin{figure}[!t]`{=latex}
+\centering
+\includegraphics[width=\columnwidth]{figures/fig-mechanism}
+\caption{Autogenic loop, as designed. Instance path (kernel validation, designed-but-unpopulated coherence check) and ontic-break path (FixProposal $\to$ approval $\to$ atomic apply $\to$ supervised restart, boot-and-health rollback). Enforcement layers and the access-control gap: §II-E and §IV-D.}\label{fig:mechanism}
+`\end{figure}`{=latex}
+
 ## The coherence triad {#sec:triad}
 
 Under this condition, we read each part of the system through three
@@ -195,20 +193,16 @@ Two kinds of change follow from the declaration structure. The
 distinction is precise.
 
 An *ontology instance* is a change the current catalog can already
-express. A new `Message` on an existing `Channel` (Sociology). A new
-`Finding` whose `state` reaches `shipped` through the enumerated transitions (Ontogeny).
-A new epistemic node of `claim_type` *contention* (Epistemics). A new
-`Draft` against an existing `Style` (Authorship). A new `TelemetryEvent`
-row emitted by an existing `Sensor` (Anatomy). Each is a new row against
-an existing instance class, drawing entirely from vocabularies the class
-already permits. Instances are verified by the constraints declared
+express: a new `Message` on an existing `Channel`, a new `Finding`
+reaching `shipped` through the enumerated transitions, a new
+`TelemetryEvent` row emitted by an existing `Sensor`. Each is a new
+row against an existing instance class, drawing entirely from
+vocabularies the class already permits. Instances are verified by the constraints declared
 alongside the class. The database refuses inserts that violate them, and
 the coherence triad then evaluates whether the new instance is
-consistent with the existing requirement and telemetry. Instances constitute the ordinary growth of the system. Six roles
-separate for a shipped Instance: origination, proposal, implementation
-(agent); construction-time validation (invariant kernel, ADR 0012);
-approval and deployment supervision (§`\ref{sec:ontic-gate}`{=latex});
-closure. The kernel is automated; the other roles retained human touch.
+consistent with the existing requirement and telemetry. Instances are the ordinary growth. Six roles separate for a shipped Instance: origination, proposal, implementation (agent); construction-time validation (kernel, ADR 0012); approval and deployment supervision (§`\ref{sec:ontic-gate}`{=latex}); closure. Only the kernel is automated.
+
+Table `\ref{tab:findings-by-path}`{=latex} classifies a shipped Finding as **Instance** if its closure diff added no migration, touched no locked file, and never transitioned through `needs_external_dev`; **Ontic-break** if any of those three occur; **Unknown** if no affected-file record exists.
 
 An *ontic break* is a change the current catalog cannot express. Two
 shapes occur. An *enum widening* (a value outside a declared enum: a
@@ -225,7 +219,7 @@ Naming the distinction gives us the safety gate. The gate is not a
 single mechanism. It is a composite of three enforcement layers. At the
 application-config layer, three ontology-bearing files carry an
 `editable: false` flag that lifts them out of the sub-agent's writable
-scope. At the workflow layer, the FDD lifecycle [@palmer2002] classifies affected
+scope. At the workflow layer, the Feature-Driven Development (FDD) lifecycle [@palmer2002] classifies affected
 paths at accept, opens a FixProposal, and refuses to `apply` (or
 `apply-and-deploy`) without a principal-review approval token
 (`POST /api/coding/proposals/:id/approve` then `/apply` or
@@ -329,7 +323,7 @@ the Finding's `Lifecycle`.
 `\begin{figure}[!t]`{=latex}
 \centering
 \includegraphics[width=0.85\columnwidth]{figures/fig-throughput}
-\caption{Cumulative autogenic Findings shipped (left axis) and net LOC (right axis, tree, mixed authorship), 9 May -- 8 Jun 2026. Weekly Vega deltas 64/50/21/0/9; LOC 20.5k/69.4k/19.8k/22.1k/3.3k. Week 4 (30 May -- 5 Jun): 0 autogenic shipped while tree grew by 22k LOC; state-transition telemetry became reliable on 5 Jun (§IV-D). User-filed (15 shipped, weekly 9/2/2/0/2) reported in Table I. LOC pre-26 May are backfilled absolute counts; basis seams on 18 and 27 May are measurement changes, not deletions.}\label{fig:throughput}
+\caption{Cumulative autogenic Findings shipped (left) and net tree LOC (right, mixed authorship), 9 May -- 8 Jun 2026. Week 4 plateau coincides with the state-transition telemetry cutover. LOC before 26 May backfilled; 18/27 May seams are measurement changes, not deletions. Weekly deltas and user-filed rows: §IV-A, §IV-B, Table I.}\label{fig:throughput}
 `\end{figure}`{=latex}
 
 ## The coding-agent loop {#sec:loop}
@@ -369,14 +363,11 @@ invariant kernel (ADR 0012) precursor and the FDD workflow as
 configured. Numbers come from `code_size_snapshots` and
 `self_improvements`.
 
-The coherence-triad check described in §`\ref{sec:triad}`{=latex} is a
-separate designed instrument. A *coherence check* is the evaluation of a
-declared constraint against the current state of the ontology and the
-current telemetry stream. It is a boolean predicate the schema carries
-as a `CHECK` or foreign-key constraint, or a query the ontology tables
-can evaluate. The predicate returns *holds* or *fails* with a pointer to
-the specific instance that produced the failure. Instrumentation for
-that event stream is designed but not populated over the reported
+The coherence-triad check (§`\ref{sec:triad}`{=latex}) is a separate
+designed instrument: a boolean predicate the schema carries as a
+`CHECK` or foreign-key constraint (or an ontology-table query),
+returning *holds* or *fails* against the failing instance.
+Instrumentation for that event stream is designed but not populated over the reported
 window. Population is future work. §`\ref{sec:threats}`{=latex}
 discloses the gap.
 
@@ -405,7 +396,8 @@ Net LOC totalled 135k (~4,506/day); LOC and Findings decouple in week
 
 ## Attribution {#sec:res-attribution}
 
-The run produced 177 Findings (9 May -- 8 June 2026, 30 days), 159
+The run produced 177 Findings (30 consecutive days: 9 May 2026
+00:00 UTC through 8 June 2026 00:00 UTC), 159
 shipped. 35 opened a `fix_proposal`; 15 reached verified or applied.
 The remaining 124 shipped without a proposal record. Separately, 117
 of 159 are ontology-unclassified from records (Table
@@ -423,7 +415,7 @@ verified/applied: 9 ontic-break, 5 instance, 1 unknown. Median close
 
 `\begin{table}[!t]`{=latex}
 \centering
-\caption{Findings by author, Vega FDD store, 9 May -- 8 June 2026 (30-day window). I / OB / Unk = ontology-classification split (Instance: no locked file, no migration, no \texttt{needs\_external\_dev} in closure diff; Ontic-break: migration, locked file, or \texttt{needs\_external\_dev}; Unknown: no affected-file record). S/d = shipped per day. 117 of 159 shipped are ontology-unclassified, 42 positively classified.}\label{tab:findings-by-path}
+\caption{Findings by author, Vega FDD store, 9 May -- 8 June 2026 (30 days). I / OB / Unk = ontology-classification split; S/d = shipped per day. Operational rule for I / OB / Unk in §II-D.}\label{tab:findings-by-path}
 \small
 \begin{tabular}{@{}lrrrrr@{}}
 \hline
@@ -474,8 +466,9 @@ reached verified or applied. Records do not identify the close path
 for the 124 shipped without a proposal record. LOC and commits
 (Fig. `\ref{fig:throughput}`{=latex}) are surviving tree growth, mixed
 authorship, not autogenic Findings. The
-case study establishes operational feasibility and throughput under
-the gate. A prospective matched evaluation is proposed future work: baseline agent, code-graph agent, and the ontology-based approach, held constant on model, tasks, tools, budget, and approval policy, measuring correct closure, missed violations, false alarms, regressions, human effort, and cost.
+case study establishes operational feasibility and throughput; gate
+participation is documented for 35 of the 159 shipped Findings
+(§`\ref{sec:res-attribution}`{=latex}). A prospective matched evaluation (baseline / code-graph / ontology, held constant on model, tasks, tools, budget, and policy) is proposed future work.
 
 The coherence-check event stream (§`\ref{sec:triad}`{=latex}) was
 designed but not populated in the window. The empirical result is
@@ -514,7 +507,7 @@ PROV-O and P-Plan; it describes an execution, ours prescribes.
 
 Mainstream coding agents leave runtime ontology latent and rediscover
 it each session by search. This choice bounds what they can be
-relied on to know. It explains the pattern of failures that has
+relied on to know. It may account for the pattern of failures that has
 accompanied their otherwise impressive progress. The assumption was
 considered invariant until it wasn't.
 
@@ -530,11 +523,11 @@ classification: 10 confirmed instance, 32 confirmed ontic-break, 117
 unclassified from records. Triad-hold is a designed check, not measured
 in this window.
 
-Whether the approach generalizes beyond the platform we built is open.
-This paper names the choice, latent structure or declared structure, and
-makes the second legible enough to try. The ontological declaration and
-its ontic-break gate model a kernel-guarded, FDD-gated control loop for
-self-improving agents. The inversion is the point.
+Whether the approach generalizes is open. This paper names the choice,
+latent structure or declared structure, and makes the second legible:
+an ontological declaration with an ontic-break gate models a
+kernel-guarded, FDD-gated control loop for self-improving agents. The
+inversion is the point.
 
 **Use of Large Language Models.** Commercial APIs (Anthropic Claude,
 xAI Grok) assisted with writing. Boole, the coding agent evaluated in
