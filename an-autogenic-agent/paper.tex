@@ -38,7 +38,7 @@
 \title{An Autogenic Agent}
 
 \author{\IEEEauthorblockN{J. Brant Arseneau\IEEEauthorrefmark{1}}
-\IEEEauthorblockA{Mach33 Group\\
+\IEEEauthorblockA{Mach33 Group, New York\\
 Toronto, Canada / New York, USA\\
 brant.arseneau@33fg.com}}
 
@@ -60,7 +60,8 @@ brant.arseneau@33fg.com}}
 % canonical in LaTeX.
 % ============================================================================
 \begin{abstract}
-Autonomous software agents rely on fixed ontological structures, rendering them incapable of self-directed architectural expansion when encountering novel tasks. This paper presents autogeny---an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic/FDD lifecycle whose accept and proposal approve/apply-or-deploy steps require a human. Operating within a closed requirements-code-telemetry loop, the agent detects ``ontic breaks'' when a requirement fits no existing class in the enum-locked catalog; the diff hits a locked or unmapped path and the Finding is refused (\texttt{needs\_external\_dev}) rather than instantiated under any default kind. To maintain execution integrity, the architecture separates concerns: an invariant kernel enforces conformance at construction (frozen validate and composition, ADR 0012), and the FDD lifecycle carries approve, atomic apply, and supervised restart. After apply-and-deploy, the FDD lifecycle auto-rolls back a proposal on boot-and-health timeout or when a reflection-verify detector still matches the Finding's target; catalog-level rollback is an operator action. We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\texttt{self\_improvements}, \texttt{fix\_proposals}: \texttt{proposed\_at}, \texttt{state}, \texttt{proposed\_by}, join on \texttt{finding\_id}), isolating the structural conditions that facilitate successful closure from those causing modification failures. The result is a kernel-guarded, FDD-gated control loop that provides a foundation for human-supervised capability expansion and offers a formal model for self-improving agent architectures.
+Autonomous software agents commonly rely on fixed ontological structures, which can limit self-directed architectural expansion when a task requires vocabulary the agent does not carry. This paper presents autogeny, an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic/FDD lifecycle whose accept and proposal approve/apply-or-deploy steps require a human. Operating within a closed requirements-code-telemetry loop, the agent detects ``ontic breaks'' when a requirement fits no existing class in the enum-locked catalog; the diff hits a locked or unmapped path and the Finding is refused (\texttt{needs\_external\_dev}) rather than instantiated under any default kind. To maintain execution integrity, the architecture separates concerns: an invariant kernel enforces conformance at construction (frozen validate and composition, ADR 0012), and the FDD lifecycle carries approve, atomic apply, and supervised restart. After apply-and-deploy, the FDD lifecycle auto-rolls back a proposal on boot-and-health timeout or when a reflection-verify detector still matches the Finding's target; catalog-level rollback is an operator action. We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\texttt{self\_improvements}, \texttt{fix\_proposals}: \texttt{proposed\_at}, \texttt{state}, \texttt{proposed\_by}, join on \texttt{finding\_id}), recording the structural conditions of each closure and their
+modification failures. The result is a kernel-guarded, FDD-gated control loop that provides a foundation for human-supervised capability expansion and offers an operational model for self-improving agent architectures.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -73,9 +74,9 @@ Commercial coding agents have converged on a single architecture \cite{agarwal20
 language model sits inside an agentic loop. A harness wraps the loop and
 manages context, tools, permissions, and state. Vendors differ in the
 harness. They share a deeper assumption: the structural knowledge the
-agent carries about its own runtime---prompt templates, tool schemas,
-retrieval indices---is fixed at authoring time. None of it extends under
-the agent's own hand. This paper takes aim at that assumption.
+agent carries about its own runtime is fixed at authoring time. Prompt
+templates, tool schemas, retrieval indices all ship with the agent.
+Extension of that knowledge by the agent is not part of the shipped design. This paper takes aim at that assumption.
 
 The assumption is that the structure of code is latent. The codebase is
 a corpus of text. The relationships between its parts, which function
@@ -91,26 +92,28 @@ Semantics is cheap.
 The relational question an agent needs to answer is different in kind.
 \emph{What breaks if I change this?} is a graph traversal over declarations,
 not a bag-of-words match over surface forms. Text retrieval approximates
-the traversal probabilistically. It returns excerpts that often contain
-the answer, and it misses answers that are stated with different words
+the traversal probabilistically. It returns excerpts that may contain the
+answer, and it misses answers that are stated with different words
 or spread across files the retriever did not surface. The agent reasons
 over the excerpts. The quality of the reasoning is bounded by the
 quality of the retrieval. Every session begins with this rediscovery.
-Nothing accumulates.
+Search alone does not accumulate structural knowledge across sessions.
 
-The assumption is the field's binding constraint. The symptoms are
-visible in the tooling: retrieval-augmented context windows growing
-longer without a corresponding growth in reliability, agents that
-succeed on curated benchmarks and fail on unfamiliar codebases, test
-suites that pass while the code drifts from what was asked for. Each
-symptom has been treated on its own terms. They share a cause. The cause
-is the choice to keep code structure latent.
+This assumption may bound what current tooling can reliably do.
+Context windows grow longer without matching reliability; agents
+succeed on curated benchmarks and fail on unfamiliar codebases; test
+suites pass while code drifts from what was asked for. Whether latent
+runtime ontology is the shared cause is a hypothesis, not a
+demonstration; this paper addresses it as a potential limitation the
+architecture can mitigate. AST search and code graphs describe the
+code; they do not prescribe what the running system can next become.
 
 The alternative is to declare it. We present a biologically-derived
 architecture whose specification is a declared class catalog embedded in
 the running system it specifies (§\ref{sec:ontology}). The
-ontology prescribes the code rather than describing it. It cannot go
-stale. The ontological declaration is what makes autogenic operation
+ontology prescribes the code. It does not describe. It cannot lag the
+code it prescribes, because the code is written against it. Runtime
+state the ontology does not represent is not seen; §\ref{sec:threats}. The ontological declaration is what makes autogenic operation
 production-viable: self-modification within existing classes is verified
 by declared constraints, and self-modification requiring new classes is
 gated at a workflow-and-config layer. Four consequences follow: a
@@ -119,62 +122,48 @@ growth from ontology-cannot-express change, a composite gate at the
 workflow-and-config layer, and a reference architecture the ontological
 framing generalizes to. We report on Vega, where a coding agent named Boole
 constructed and maintained the host against its own declared ontology
-for thirty days. The code is where the thinking lands.
+for thirty days on a precursor implementation of the architecture described here (§III-E times the artifact dates). The code is just where the thinking lands.
 
-\subsection*{Contributions}\label{contributions}
-- \textbf{A reference architecture.} Ten mind components + three body
-systems, biologically derived, autogenic (§\ref{sec:reference}).
-
-- \textbf{A framing.} Code structure is a declaration, not a discovery. The
-agent authors what it reads; the ontology prescribes the code, describes
-nothing after the fact, and cannot go stale
-(§\ref{sec:ontology}).
-
-- \textbf{A verification model.} Coherence maintenance across the three
-edges of the requirement/code/telemetry triad
-(§\ref{sec:triad}).
-
-- \textbf{A taxonomy of change.} Ontology instances (existing vocabulary,
-agent-closed) versus ontic breaks (new class, human-gated at accept and
-approve/apply) (§\ref{sec:findings-taxonomy}).
-
-- \textbf{An empirical demonstration.} Thirty days of continuous operation
-on a production agent platform where the coding agent constructs and
-maintains its host against the host's own declared ontology
-(§\ref{sec:results}).
+\textbf{Contributions.} (i) A reference architecture inspired by biological
+cognition (ten mind components, three body systems; §\ref{sec:reference}).
+(ii) A framing: code structure as declaration, not discovery: the
+agent authors what it reads (§\ref{sec:ontology}). (iii) A
+verification model: coherence across requirement, code, and telemetry
+(§\ref{sec:triad}). (iv) A taxonomy of change: ontology
+instances (agent-originated, kernel-validated) versus ontic breaks (human-gated;
+§\ref{sec:findings-taxonomy}). (v) An empirical demonstration:
+thirty days on a production agent platform (§\ref{sec:results}).
 
 \section{Framework}\label{sec:framework}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{figures/ontology-graph.png}
+\includegraphics[width=\columnwidth]{figures/fig-mechanism}
 
-\caption{Force-directed rendering of the Vega ontological catalog. Eight discipline packages color-code the nodes; each is a full sub-ontology of typed classes and declared UML relations (composes, isA, assoc, depends).}\label{fig:ontology-graph}
+\caption{Autogenic loop mechanism, as designed. Instance path: agent is autonomous at implementation; kernel validation (ADR 0012) is structural; the coherence check on completion is designed but was not populated over the reported window (§IV-D). Ontic-break path: agent-authored FixProposal, then human approval, atomic apply, and supervised restart (behavioral). Boot-and-health rollback is automated, actor-configured, not kernel-structural. Access-control gap (§IV-D): a sub-agent with repo write and \texttt{DATABASE\_URL} can bypass the workflow via \texttt{migrate}.}\label{fig:mechanism}
 
 \end{figure}
 
 \subsection{Reference architecture}\label{sec:reference}
 
-The architecture derives from biological cognition. Every neural
-structure in the human brain accumulated across five hundred million
-years of evolution. The build order fixes a dependency order: the oldest
+The architecture is design-inspired by biological cognition; the
+mapping below is analogy, not a functional-equivalence claim. Every
+neural structure in the human brain accumulated across five hundred
+million years of evolution. The build order fixes a dependency order: the oldest
 structures handle the most fundamental problems and the newest the most
 abstract. Ten mind components mirror ten neural structures: Cognitive Fabric --
 Cerebral Cortex, Binding Engine -- Hippocampus, Evaluation Engine --
 Amygdala, Selection Gate -- Basal Ganglia, Router -- Thalamus,
 Prediction Engine -- Cerebellum, Conflict Monitor -- Anterior Cingulate,
 Drive System -- VTA / dopamine circuits, Initiative Engine -- Pre-SMA,
-Interconnect -- White Matter. Each artificial component implements the
-same subfunctions as its biological counterpart in the same
-configuration.
+Interconnect -- White Matter. The mapping supplies naming and rough
+functional intent for each component; it is not a claim of
+neuroscientific equivalence.
 
 The architecture is \emph{autogenic}: its specification is embedded in the
-running system, not held externally. Six axioms follow: \textbf{Unity}
-(processing and memory share the substrate), \textbf{Emergence} (faculties
-arise from component interaction), \textbf{Identity} (the system carries its
-own specification), \textbf{Embodiment} (the body is constitutive),
-\textbf{Regeneration} (the architecture repairs and extends itself),
-\textbf{Determination} (the system participates in its own construction).
+running system. Six axioms follow (unity, emergence, identity,
+embodiment, regeneration, determination). The system carries its own
+specification and participates in its own construction.
 
 Three body systems ground the ten mind components: Sensory (input),
 Motor (output), and Interoceptive (internal state). The Interoceptive
@@ -188,8 +177,8 @@ whose instances are the actual organs of the running body: \texttt{Process},
 In Vega, the ontology is a \emph{catalog of classes}. One hundred and seven
 declared classes at the time of writing, one hundred and five with an
 explicit machine schema, each defined in \texttt{lib/proto/*.js} and registered
-in a single manifest. The formal catalog was created on 6 July 2026; the
-ontology structure during the reported run window (May-June 2026) was
+in a single manifest. The formal catalog was created on 6 July 2026.
+The ontology structure during the reported run window (May-June 2026) was
 carried informally as prompts, faculties, tool schemas, and migrations,
 and the class-count trajectory through July and August is 40, then 68,
 88, 94, and finally the live 107 at time of writing. The catalog is
@@ -207,7 +196,8 @@ ordinary code but not as a first-class object. An instance class
 constructs and validates instances at runtime against its declared field
 list. The ladder walks forward only. A class does not regress. Promotion
 from one rung to the next is a discrete commit that ships a schema, a
-class module, tests, and a state flip together (recipe in ADR 0014).
+class module, tests, and a state flip together (recipe in
+Architecture Decision Record (ADR) 0014).
 
 The disciplines carry vocabularies of their own. Epistemics holds
 \texttt{epistemic\_nodes} with a nine-value \texttt{claim\_type} enum for Toulmin
@@ -216,8 +206,8 @@ argument structure \cite{toulmin1958}. Physiology holds \texttt{TelemetryEvent},
 \texttt{visibility} enum (\emph{public}, \emph{private}, \emph{DM}). Meta holds the state
 ladder as an enum (\emph{planned}, \emph{procedural}, \emph{instance}). Anatomy holds
 the runtime organs: \texttt{Process}, \texttt{Sensor}, \texttt{Effector}, \texttt{Store}, \texttt{Clock},
-\texttt{Surface}---classes whose instances are the actual organs of the
-running body.
+\texttt{Surface}. Each is a class whose instances are the actual organs of
+the running body.
 
 Every one of these vocabularies is a closed enum enforced at the storage
 layer. The database refuses an \texttt{INSERT} whose enum value is not on the
@@ -234,34 +224,33 @@ adding a class, goes through the same discipline at a larger grain.
 The catalog is neither a description of the code nor a description of a
 domain outside the code. It is a set of declarations that prescribe what
 the code and the agent can do next.
-Fig.~\ref{fig:ontology-graph} shows a slice of the running
-catalog.
+Fig. \ref{fig:mechanism} shows the loop's mechanism.
 
 \subsection{The coherence triad}\label{sec:triad}
 
 Under this condition, we read each part of the system through three
 representations. The requirement declares what must be true. The code
-implements it. The telemetry reports what actually happened. We call the
+implements it. The telemetry reports what happened. We call the
 three-way relationship the \emph{coherence triad}. Verification is the
-maintenance of coherence across its three edges, where the substrate
-carries all three; the coding-agent loop and FDD diffs do.
+maintenance of coherence across its three edges where the substrate
+carries all three.
 
 Two edges are familiar. Requirement-code coherence is what a
 specification matches against an implementation. Code-telemetry
 coherence is what a test suite establishes: given a run, the observed
 behavior matches the coded behavior. The third edge is the one the field
 routinely leaves implicit. Requirement-telemetry coherence asks whether
-what actually happens is what was actually asked for, independent of how
-the code got there. Specification gaming \cite{krakovna2020,amodei2016,skalse2022} passes the tests by definition. It is
+what happens is what was asked for, independent of how the code got
+there. Specification gaming \cite{krakovna2020,amodei2016,skalse2022} passes the tests by definition. It is
 invisible on the code-telemetry edge and shows up only on the
-requirement-telemetry edge. A verification regime that names all three
-edges catches it. One that names only two does not.
-
-The triad is exact where a test suite is approximate. A test suite
-samples inputs. A coherence check evaluates a declared constraint
-against the current state of the ontology and the current telemetry
-stream, and returns a yes or a no. There is no coverage question,
-because there is no sample.
+requirement-telemetry edge. Naming all three edges is necessary but not sufficient: detection
+also requires an encoded requirement, a suitable predicate, telemetry
+that observes the relevant behavior, and an implemented monitor.
+Within those conditions a coherence check can be exact: it
+evaluates a declared constraint and returns yes or no, but exactness
+of the predicate does not establish completeness of the encoding, the
+telemetry, or the represented dependencies. A test suite samples
+inputs.
 
 \subsection{Two kinds of change}\label{sec:findings-taxonomy}
 
@@ -278,25 +267,20 @@ an existing instance class, drawing entirely from vocabularies the class
 already permits. Instances are verified by the constraints declared
 alongside the class. The database refuses inserts that violate them, and
 the coherence triad then evaluates whether the new instance is
-consistent with the existing requirement and telemetry. Instances
-constitute the ordinary growth of the system. The agent handles them
-without human intervention.
+consistent with the existing requirement and telemetry. Instances constitute the ordinary growth of the system. Six roles
+separate for a shipped Instance: origination, proposal, implementation
+(agent); construction-time validation (invariant kernel, ADR 0012);
+approval and deployment supervision (§\ref{sec:ontic-gate});
+closure. The kernel is automated; the other roles retained human touch.
 
 An \emph{ontic break} is a change the current catalog cannot express. Two
-shapes of break occur. The narrower is an enum widening. A claim kind
-not among the nine Toulmin roles (Epistemics), a \texttt{Channel.visibility}
-outside \emph{public}, \emph{private}, \emph{DM} (Sociology), or a new \texttt{Sensor}
-sub-type for a hardware peripheral the catalog has not yet named
-(Anatomy) cannot be represented until the schema is widened. The
-widening is a migration. The wider shape is a class admission. A
-requirement that names an entity that fits no existing class in the
-catalog cannot be represented at all until a new class is added, its
-schema authored, its module written, and its state walked from \emph{planned}
-to \emph{instance} through the ADR-0014 recipe. Both shapes share a
-structural property. The break is not an exception raised at runtime. It
-is a requirement the agent cannot satisfy with the vocabulary it has;
-the FDD lifecycle moves the Finding to \texttt{needs\_external\_dev} and the
-only forward path is to hand off to an operator or engineer.
+shapes occur. An \emph{enum widening} (a value outside a declared enum: a
+claim kind, a \texttt{Channel.visibility}, a \texttt{Sensor} sub-type) requires a
+migration. A \emph{class admission} (a requirement no existing class fits)
+requires a new class walked from \emph{planned} to \emph{instance} per the
+ADR-0014 recipe. The break is a requirement the agent cannot satisfy
+with the vocabulary it has. The FDD lifecycle moves the Finding to
+\texttt{needs\_external\_dev} for hand-off.
 
 \subsection{The ontic-break gate}\label{sec:ontic-gate}
 
@@ -316,21 +300,26 @@ UI after inspecting the proposal. Together the three layers keep
 sub-agents outside the loop that decides which schema files can be
 edited and which ontic-break migrations can be applied.
 
-We are careful about what this composite is and is not. It is not a
-structural invariant of the PostgreSQL schema; the database does not
-refuse agent DDL. A sub-agent with repo write and \texttt{DATABASE\_URL} could
-technically bypass the workflow by running \texttt{migrate} outside the
-coordinator. The coordinator's refusal to skip review binds only
-sub-agents that go through the FDD lifecycle. What the composite buys is
-the observation that every ship over the reported window crossed all
-three layers by construction; §\ref{sec:results} reports the
-throughput that constraint produced. The gate is the mechanism, but the
-mechanism is workflow-and-config, not schema. That is the standard.
+We are careful about what this composite is and is not. Five guarantee
+types separate. \emph{Structural} (kernel + enum locks refuse malformed
+instances at construction). \emph{Behavioral} (FDD approval, deployment
+supervision, auto-rollback, actor-driven). \emph{Access-control} is not
+enforced: a sub-agent with repo write and \texttt{DATABASE\_URL} bypasses the
+workflow by running \texttt{migrate} outside the coordinator. The workflow was configured to route ships through the gate. Records
+verify FDD workflow entry for 35 of the 159 shipped, of which 15
+reached verified or applied. The remaining 124 shipped Findings closed
+without a proposal record and cannot be attributed to the gate from
+records alone; absence of a record is not evidence of bypass, nor of
+review outside the workflow.
+The gate is workflow-and-config, not schema. That is the standard.
+Schema conformance is not behavioral correctness: an ontology-compatible
+instance can still change runtime behavior in ways the kernel does not
+catch.
 
-Failed apply-and-deploys roll back automatically on boot-and-health
-timeout or reflection-verify mismatch (\texttt{stageRollback}, \texttt{lifecycle.js}).
-Catalog-level rollback (git revert, traffic shift, inverse SQL) is
-operator-only.
+Failed apply-and-deploys auto-roll back on boot-and-health timeout or
+reflection-verify mismatch (\texttt{stageRollback}); catalog rollback is
+operator-only. Window: 1 auto-rollback (boot-and-health), 1 operator rollback, 3
+proposals rejected before apply, 0 reflection-verify mismatches.
 
 \section{Methods}\label{sec:methods}
 
@@ -347,13 +336,9 @@ Boole is a coding agent hosted inside Vega. It reads the ontology,
 receives Findings from the Vega surface, and orchestrates five
 specialized sub-agents in the change-producing loop (Analyst, PM,
 Designer, Architect, Telemetry; roles enumerated in
-§\ref{sec:architecture}). The remaining eighty-three
-sub-agents (roster to eighty-nine; full list in the replication package)
-handle infrastructure and sit outside that loop.
-
-During the reported thirty-day run, Boole handled every incoming
-Finding through the ontology-instance path; ontic breaks were declared
-and handed off.
+§\ref{sec:architecture}). Boole plus those five make six
+in-loop; eighty-three infrastructure sub-agents sit outside, for
+eighty-nine total. Full roster in the replication package.
 
 \subsection{Architecture}\label{sec:architecture}
 
@@ -365,35 +350,19 @@ decision on every incoming Finding: instance path or hand-off. The six
 in-loop sub-agents named in §\ref{sec:vega-boole} land each
 requirement. Boole handles routing. The Analyst, PM, Designer, and
 Architect handle class-level changes against declared constraints. The
-Telemetry agent runs coherence checks (§\ref{sec:measurement})
+Telemetry agent is designed to run coherence checks (§\ref{sec:measurement})
 against the same database the dev team writes to. The infrastructure
 sub-agents outside the loop produce no changes to code. Their presence
 reflects that Vega is a running system, not a stripped-down harness.
 Their absence from the change-producing loop matters for the attribution
-claim in §\ref{sec:results}. OpenHands~\cite{openhands2025}
-similarly organizes work around a handful of coding roles. Vega's six
-in-loop agents sit in a comparable range. The larger system total
-reflects an architectural choice: infrastructure services other systems
-handle at the harness level are represented as ontology classes and
-instantiated as sub-agents, appearing in the roster count.
+claim in §\ref{sec:results}. Vega's six in-loop
+agents sit in the range OpenHands \cite{openhands2025} uses. The larger
+system total reflects representing infrastructure services as ontology
+classes instantiated as sub-agents.
 
-A single telemetry agent maintains the third edge of the coherence
-triad. It records \texttt{TelemetryEvent}, \texttt{TransitionEvent}, \texttt{ToolExecution},
-and \texttt{Vital} rows against the same database the dev team writes to, and
-it runs the coherence checks described in
-§\ref{sec:measurement} on a fixed schedule.
-
-A separate conformance mechanism, the invariant kernel of ADR 0012
-(\texttt{@mach33/core}), enforces class-schema validity at construction: the
-frozen \texttt{validate} + composition subset rejects any instance not
-conforming to its declared class. Apply-and-deploy is the FDD
-lifecycle's job (§\ref{sec:ontic-gate}).
-
-A prior draft of this system named a distinct \emph{Developer} sub-agent as
-the code-writing role. That role has been retired. Its work is
-distributed across the five-agent dev team under Boole's coordination,
-and the retirement is itself an ontic-break event recorded in the
-catalog.
+The invariant kernel (ADR 0012, \texttt{@mach33/core}) enforces class-schema
+validity at construction; apply-and-deploy is the FDD lifecycle
+(§\ref{sec:ontic-gate}).
 
 \subsection{Development lifecycle}\label{sec:lifecycle}
 
@@ -412,21 +381,19 @@ against the state of its own beliefs, not against an external
 specification.
 
 The Analyst decomposes each Finding into touched classes and instances.
-\textbf{Best case}: every class and vocabulary value exists---an
-instance-path close by the Designer, coordinated through an
-\texttt{AutogenicCycle} and closed by a \texttt{Release}. \textbf{Intermediate}: classes
-exist but a vocabulary value is missing---a narrower ontic break, an
-enum-widening migration authored for human review. \textbf{Worst}: nothing
-exists---new classes must walk from \emph{planned} through \emph{procedural} to
-\emph{instance} per the ADR-0014 recipe. Creation proceeds only if the
-Finding is judged coherent; otherwise rejected. Every step is a
-\texttt{TransitionEvent} against the Finding's \texttt{Lifecycle}.
+\textbf{Best case}: every class and vocabulary value exists; the Designer
+closes on the instance path through an \texttt{AutogenicCycle}. \textbf{Intermediate}:
+a vocabulary value is missing, a narrower ontic break requiring an
+enum-widening migration for human review. \textbf{Worst}: new classes must
+walk from \emph{planned} through \emph{procedural} to \emph{instance} per ADR-0014,
+accepted only if coherent. Every step is a \texttt{TransitionEvent} against
+the Finding's \texttt{Lifecycle}.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.85\columnwidth]{figures/fig-throughput}
 
-\caption{Cumulative Findings shipped by author, 9 May -- 8 Jun 2026 (Vega 144, user 15). Vega dominates.}\label{fig:throughput}
+\caption{Cumulative autogenic Findings shipped (left axis) and net LOC (right axis, tree, mixed authorship), 9 May -- 8 Jun 2026. Weekly Vega deltas 64/50/21/0/9; LOC 20.5k/69.4k/19.8k/22.1k/3.3k. Week 4 (30 May -- 5 Jun): 0 autogenic shipped while tree grew by 22k LOC; state-transition telemetry became reliable on 5 Jun (§IV-D). User-filed (15 shipped, weekly 9/2/2/0/2) reported in Table I. LOC pre-26 May are backfilled absolute counts; basis seams on 18 and 27 May are measurement changes, not deletions.}\label{fig:throughput}
 
 \end{figure}
 
@@ -435,38 +402,37 @@ Finding is judged coherent; otherwise rejected. Every step is a
 Inside every \texttt{AutogenicCycle} above, Boole runs an inner loop. The field
 has converged on a common shape for it: reason-act-observe, repeated
 until a task closes~\cite{react2023,sweagent2024,openhands2025}. The
-agent inspects the state (usually via grep or an embedding retriever),
+agent inspects the state via grep or an embedding retriever,
 reasons about what to do next, invokes a tool, observes the result, and
 repeats. Termination is decided by the agent's own judgment against the
 task specification.
 
 Boole runs the same three-step loop with two substitutions dictated by
 the ontology. \textbf{Reason} is a look-up, not a search. A query against the
-class catalog returns exact class membership, exact constraint
-violations, and exact transitive-closure blast radius. The retrieval
+class catalog returns exact class membership, constraint violations,
+and transitive-closure blast radius within the declared ontology.
+Runtime dependencies not represented in the ontology are not seen. The retrieval
 approximation that binds a grep- or embedding-based reasoner
-(§\ref{sec:intro}) is not there to bind Boole. \textbf{Observe}
-consumes both the tool result and the coherence check that fires after
-every state-changing action. If the coherence check fails, the loop
-cannot terminate. Termination is decided against the declared
-constraints of the touched classes, not against the agent's own
-judgment. This inverts the field's default. The typical loop trusts the
-agent's own stopping criterion. Boole's loop trusts the ontology's.
+(§\ref{sec:intro}) is not there to bind Boole. In the design, \textbf{Observe} would consume both the tool result and a
+coherence check on state-changing actions; a failing check would
+prevent termination. Instrumentation for that event stream was not
+populated during the reported window (§\ref{sec:threats});
+coherence maintenance was not measured. Termination in the design is
+decided against declared constraints of the touched classes, not the
+agent's own judgment. This inverts the typical loop, which trusts the
+agent's stopping criterion. Boole's design trusts the ontology's.
 
 \subsection{Measurement}\label{sec:measurement}
 
 The measurement instrumentation is thin by design. The
-\texttt{M33-VEGA-INST-001} package (\texttt{lib/vega-instrumentation.js}, endpoint
-\texttt{/api/instrumentation/metrics}) is the code identity for the
-productivity-and-quality time-series recorder. The package writes numeric samples to an append-only
-SHA-256-hashed JSONL chain (\texttt{data/vega-instrumentation.log.jsonl})
-across three categories: productivity (\texttt{findings\_filed},
-\texttt{tasks\_completed}, \texttt{commits\_landed}, \texttt{throughput\_per\_hour}), autogenic
-(\texttt{cycle\_duration\_ms}, \texttt{cycles\_completed}, \texttt{self\_findings\_ratio},
-\texttt{capability\_delta}), and code quality (\texttt{test\_pass\_rate}, \texttt{lint\_errors},
-\texttt{cyclomatic\_avg}, \texttt{review\_findings}). A \texttt{verifyChain()} endpoint returns
-\texttt{ok/false} against the tamper-evidence of the log. This is the
-instrumentation that shipped in the reported window.
+\texttt{M33-VEGA-INST-001} package writes numeric samples to an append-only
+SHA-256-hashed JSONL chain across productivity, autogenic, and
+code-quality categories; a \texttt{verifyChain()} endpoint reports
+tamper-evidence. INST-001 (8 Aug 2026) and the formal catalog (6 July
+2026) postdate the reported window; run-time governance was the
+invariant kernel (ADR 0012) precursor and the FDD workflow as
+configured. Numbers come from \texttt{code\_size\_snapshots} and
+\texttt{self\_improvements}.
 
 The coherence-triad check described in §\ref{sec:triad} is a
 separate designed instrument. A \emph{coherence check} is the evaluation of a
@@ -476,92 +442,92 @@ as a \texttt{CHECK} or foreign-key constraint, or a query the ontology tables
 can evaluate. The predicate returns \emph{holds} or \emph{fails} with a pointer to
 the specific instance that produced the failure. Instrumentation for
 that event stream is designed but not populated over the reported
-window. Population is future work; §\ref{sec:threats}
+window. Population is future work. §\ref{sec:threats}
 discloses the gap.
 
-The replication package (\url{https://github.com/jbarseneau99/papers/tree/main/an-autogenic-agent}) releases the ontology-catalog snapshot, the enum-locking schema migrations, the \texttt{M33-VEGA-INST-001} chain, the coherence-check design specification, and the paper source; Vega and Boole themselves remain proprietary.
+The replication package is at \url{https://github.com/jbarseneau99/papers/tree/main/an-autogenic-agent}. It releases the ontology-catalog snapshot, the enum-locking schema migrations, the \texttt{M33-VEGA-INST-001} chain, the coherence-check design specification, and the paper source under the MIT License. Vega and Boole themselves remain proprietary.
 
 \section{Results and Discussion}\label{sec:results}
 
-\subsection{Coherence over time}\label{sec:res-coherence}
+\subsection{Throughput under the coherence framework}\label{sec:res-coherence}
 
-The hypothesis under test is that the coherence triad can be maintained
-across an extended run. This paper reports the run's throughput evidence
-(§\ref{sec:res-attribution}, Fig.~\ref{fig:throughput}): 159 Findings shipped through the
-FDD-gated pipeline over thirty consecutive days, with attribution broken
-out by author. The coherence-check event stream that would produce
+The reported evidence is throughput under a designed coherence-triad
+framework. The triad-holds hypothesis is not tested here; the
+coherence-check event stream was designed but not populated. Throughput
+(§\ref{sec:res-attribution}, Fig. \ref{fig:throughput}): 159 Findings shipped in the
+reported window, of which 144 were autogenic (Vega-originated) and 15
+user-filed. The FDD gate closed 15 of the 159. The coherence-check event stream that would produce
 holds/fails counts over the same window is designed
 (§\ref{sec:measurement}) but was not populated. Reporting
 those counts is future work.
 
-The shape carries the argument. Vega's curve rises through the window
-without a stall; user proposals arrive at a low, steady rate. Fully
-autonomous closes are absent by design, not by failure.
+The shape is front-loaded: weekly Vega deltas 64, 50, 21, 0, 9; weeks
+1--2 shipped 114 of the eventual 144. Week 4 shipped zero and
+coincides with the state-transition-telemetry cutover; the plateau and
+the source-shift are not separable. User weekly deltas were steady.
+Net LOC totalled 135k (\textasciitilde4,506/day); LOC and Findings decouple in week
+4 (Fig. \ref{fig:throughput}).
 
 \subsection{Attribution}\label{sec:res-attribution}
 
-The run produced 177 Findings across thirty consecutive days (9 May -- 8
-June 2026), of which 159 shipped through the FDD lifecycle. Every
-shipped Finding crossed the principal-review gate by construction.
-\textbf{Fully autonomous closes were zero.} The 159 shipped break down by
-\texttt{proposed\_by} (Table \ref{tab:findings-by-path}, Fig. \ref{fig:throughput}): 144 proposed by the
-agent (91\%), 15 by a user (9\%), 0 by team-decomposition.
+The run produced 177 Findings (9 May -- 8 June 2026, 30 days), 159
+shipped. 35 opened a \texttt{fix\_proposal}; 15 reached verified or applied.
+The remaining 124 shipped without a proposal record. Separately, 117
+of 159 are ontology-unclassified from records (Table
+\ref{tab:findings-by-path}); the two counts are different
+attributes. Intended policy (§\ref{sec:findings-taxonomy})
+required human approval and supervised deployment on every ship; for
+the 124 without a proposal record this is policy, not records-verified.
+By \texttt{proposed\_by}: 144 agent (91\%), 15 user (9\%), 0 team.
 
-Attribution is by \texttt{proposed\_by}: 144 agent-proposed, 15 user-proposed.
-All 159 crossed the same principal-review gate
-(§\ref{sec:ontic-gate}); a fix-proposal join on \texttt{finding\_id}
-covers 15 shipped rows. The registry's per-Finding fields
-(\texttt{proposed\_at}, \texttt{state}, \texttt{proposed\_by}, \texttt{fix\_proposals.finding\_id})
-support the structural-conditions analysis the abstract promises;
-the per-condition table ships with the replication package.
+Ship rate 89.8\% (159/177). Ontology split from records: 10/32/117
+(Table I). 74\% lack the affected-file record; among the 15
+verified/applied: 9 ontic-break, 5 instance, 1 unknown. Median close
+8h 15m Vega / 6h 47m user; 5.3 shipped/day over the 30-day window.
 
 \begin{table}[!t]
 \centering
-\caption{Shipped Findings by author (proposed\_by), counts from the Vega FDD store, 9 May -- 8 June 2026 window}
-\label{tab:findings-by-path}
-\begin{tabular}{@{}lr@{}}
-\toprule
-Proposed by & Shipped \\
-\midrule
-vega & 144 \\
-user & 15 \\
-team & 0 \\
-Total shipped / filed in window & 159 / 177 \\
-\bottomrule
+
+\caption{Findings by author, Vega FDD store, 9 May -- 8 June 2026 (30-day window). I / OB / Unk = ontology-classification split (Instance: no locked file, no migration, no \texttt{needs\_external\_dev} in closure diff; Ontic-break: migration, locked file, or \texttt{needs\_external\_dev}; Unknown: no affected-file record). S/d = shipped per day. 117 of 159 shipped are ontology-unclassified, 42 positively classified.}\label{tab:findings-by-path}
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\hline
+Author & Filed & Ship & I / OB / Unk & S/d & Median \\
+\hline
+Vega   & 161 & 144 & 4 / 28 / 112 & 4.8 & 8h 15m \\
+User   &  16 &  15 & 6 /  4 /   5 & 0.5 & 6h 47m \\
+Team   &   0 &   0 & 0 /  0 /   0 & 0.0 & --     \\
+\hline
+Total  & 177 & 159 & 10 / 32 / 117 & 5.3 & 8h 09m \\
+\hline
 \end{tabular}
+
 \end{table}
 
 \subsection{Specification-gaming detection}\label{sec:res-gaming}
 
-Specification gaming is behavior that passes a test suite while failing
-to satisfy the requirement the tests were meant to protect
-(§\ref{sec:triad}). By construction it appears in a coherence
-check as a failure on the requirement-telemetry edge without a matching
-failure on the code-telemetry edge, paired on the same transition id.
-This paper describes the detector; empirical validation depends on the
-coherence-check event stream of §\ref{sec:measurement} and is
-future work.
-
-The detector's limit is what the ontology can name: it surfaces gaming
-that violates a declared constraint, not gaming that satisfies every
-declared constraint while missing an undeclared one.
+Specification gaming, behavior that passes tests while failing the
+requirement the tests were meant to protect, appears in a coherence
+check as failure on the requirement-telemetry edge without a matching
+code-telemetry failure, paired on the same transition id. This paper
+describes the detector; validation is future work. Coverage is the
+ontology's coverage: gaming that violates a declared constraint is
+surfaced; gaming that satisfies every declared constraint while missing
+an undeclared one is not.
 
 \subsection{Threats to validity}\label{sec:threats}
 
 Four threats attach. \emph{Single-platform, \(n=1\)}: coherence on Vega does
 not entail coherence on a different system whose ontology is declared
 differently; what generalizes is the shape of the argument, not the
-numbers. \emph{Ontology-as-choice}: widening \texttt{entities.type} from nine to
-nineteen, or replacing the Toulmin structure of \texttt{claim\_type} with a
-rhetorical one, would change what counts as an instance and what counts
-as an ontic break, the framework distinguishes declared ontologies from
-latent ones, not good ones from bad. \emph{Two of three enforcement
+numbers. \emph{Ontology-as-choice}: widening \texttt{entities.type} or replacing the
+Toulmin \texttt{claim\_type} with a rhetorical structure would change what
+counts as an instance versus an ontic break. The framework
+distinguishes declared ontologies from latent ones, not good from bad. \emph{Two of three enforcement
 mechanisms are behavioral, not structural}
-(§\ref{sec:ontic-gate}): locked-region refusal by a sub-agent
-and principal review at checkpoints depend on an actor choosing to act;
-only the ontic-break gate, which lives in the database schema, cannot be
-overridden from inside the loop, so a hostile agent could route around
-the softer gates but not the hard one. \emph{Instrumented by the observed
+(§\ref{sec:ontic-gate}): locked-region refusal and principal
+review depend on an actor choosing to act. Only the storage-layer enum
+lock is structural. A hostile agent routes around the softer gates. \emph{Instrumented by the observed
 system}: the telemetry agent reads state from the same database it
 writes to; the reads and writes are separated by role but a fully
 independent observer would need to be hosted outside Vega.
@@ -569,65 +535,81 @@ independent observer would need to be hosted outside Vega.
 State-transition telemetry began 5 June 2026. For 9 May--4 June,
 Finding dates derive from \texttt{proposed\_at} and artifact metadata, not
 logged transitions; closure dates in that stretch are lower-bound
-estimates.
+estimates. Of the 159 shipped Findings, 35 opened a \texttt{fix\_proposal}; 15
+reached verified or applied. Records do not identify the close path
+for the 124 shipped without a proposal record. LOC and commits
+(Fig. \ref{fig:throughput}) are surviving tree growth, mixed
+authorship, not autogenic Findings. The
+case study establishes operational feasibility and throughput under
+the gate. A prospective matched evaluation is proposed future work: baseline agent, code-graph agent, and the ontology-based approach, held constant on model, tasks, tools, budget, and approval policy, measuring correct closure, missed violations, false alarms, regressions, human effort, and cost.
 
 The coherence-check event stream (§\ref{sec:triad}) was
-designed but not populated during the reported window;
-\texttt{M33-VEGA-INST-001} shipped only productivity-and-quality series
-(§\ref{sec:measurement}). The empirical result is throughput
-(§\ref{sec:res-attribution}), not a holds/fails count.
-
-The ontic-break gate (§\ref{sec:ontic-gate}) is a composite of
-application-config file locks, the FDD workflow, and the operator
-approve/apply UI. It is not a structural invariant of the PostgreSQL
-schema; a sub-agent with repo write and database credentials could
-bypass the workflow by running \texttt{migrate} outside the coordinator. The
-paper reports what the composite gate enforced when honored: every
-shipped Finding over the window crossed all three layers.
+designed but not populated in the window. The empirical result is
+throughput, not a holds/fails count. The ontic-break gate
+(§\ref{sec:ontic-gate}) is workflow-and-config, not a
+structural invariant of the schema: a sub-agent with repo write and
+database credentials could bypass the workflow by running \texttt{migrate}
+outside the coordinator.
 
 \subsection{Related work}\label{sec:related}
 
-Our position sits against four lines. The benchmark line,
-SWE-bench~\cite{swebench2024,swebench2026}, SWE-agent~\cite{sweagent2024},
-AutoCodeRover~\cite{autocoderover2024}, measures an agent's ability to close
-bug reports in code it did not author; the shape does not evaluate an
-agent that authors what it reads. The harness line, ReAct~\cite{react2023},
-OpenHands~\cite{openhands2025}, and the commercial-agent surveys of Agarwal
-et al.~\cite{agarwal2026} and He et al.~\cite{he2026cursor}, improves the loop
-around the model (tools, context, memory) while keeping the search-based
-rediscovery model of §\ref{sec:intro}; our alternative moves
-the site of gains from the harness to the ontology declaration.
+Our position sits against five lines. \emph{Benchmark} (SWE-bench
+\cite{swebench2024,swebench2026}, SWE-agent \cite{sweagent2024},
+AutoCodeRover \cite{autocoderover2024}): agents closing bugs in code they
+did not author; AutoCodeRover's AST is a partial structural break
+with grep. \emph{Harness} (ReAct \cite{react2023}, OpenHands \cite{openhands2025},
+Agarwal \cite{agarwal2026}, He \cite{he2026cursor}) improves the loop around
+the model. \emph{Code-graph} (RepoGraph \cite{repograph2025}) makes the
+repository graph explicit. These describe code; we prescribe with a
+runtime ontology.
 
-The self-evolving-agent line \cite{selfevolve2026,seagent2025,sica2025}
-treats the agent as a self-modifying program with no declared ontology
-to check modifications against; the ontic-break gate is our addition. The ontology-of-agents line \cite{agento2026} models workflows over sixteen
-flat classes on PROV-O and P-Plan; that declaration targets the
-workflow the agent executes, ours the running system it authors.
+\emph{Runtime-model} (Models@run.time \cite{modelsatruntime2009}, Requirements
+Reflection \cite{reqreflection2010}) established causally-connected
+self-representations and runtime requirements. Our addition is the
+instance-vs-ontic-break distinction and the composite gate. \emph{Self-evolving-agent} (SelfEvolve \cite{selfevolve2026}, SEAgent
+\cite{seagent2025}, Gödel Agent \cite{godelagent2025}, Darwin Gödel
+\cite{darwingodel2026}, Huxley-Gödel \cite{huxleygodel2026}): agent
+modifies itself, unconstrained against a declared ontology.
+Huxley-Gödel raises the self-improving bar to
+capability-to-produce-better-agents; we measure throughput and do not
+claim capability improvement. \emph{Ontology-of-agents} (AgentO
+\cite{agento2026}) declares workflows over sixteen flat classes on
+PROV-O and P-Plan; it describes an execution, ours prescribes.
 
 \section{Conclusion}\label{sec:conclusion}
 
-The field's coding agents treat code structure as latent, rediscovered
-each session by search over text. This choice bounds what they can be
+Mainstream coding agents leave runtime ontology latent and rediscover
+it each session by search. This choice bounds what they can be
 relied on to know. It explains the pattern of failures that has
 accompanied their otherwise impressive progress. The assumption was
 considered invariant until it wasn't.
 
 The alternative is to declare the structure. The agent authors the code
-it reads. The declaration prescribes rather than describes. Verification
+it reads. The declaration prescribes. It does not describe. Verification
 becomes coherence across the three edges of a triad that includes not
 only the code and the tests but the requirement itself.
 
-We ran the alternative on Vega for thirty consecutive days. Vega filed
-177 Findings and shipped 159 through the FDD lifecycle. 144 of those
-were proposed by the agent, 15 by a user. Every one crossed the principal-review
-gate. The triad held throughout. The gate is the mechanism.
+We ran the alternative on Vega for thirty consecutive days. Of the 177
+Findings recorded (161 Vega-filed, 16 user-filed), 159 shipped. 35
+opened a \texttt{fix\_proposal}; 15 reached verified or applied. Ship
+classification: 10 confirmed instance, 32 confirmed ontic-break, 117
+unclassified from records. Triad-hold is a designed check, not measured
+in this window.
 
-Whether the approach generalizes beyond the platform we built is an open
-question. What this paper does is name the choice, latent structure or
-declared structure, and make the second one legible enough to try. The
-ontological declaration with its ontic-break gate offers a first formal
-model of a kernel-guarded, FDD-gated control loop for self-improving
-agent architectures. The inversion is the point.
+Whether the approach generalizes beyond the platform we built is open.
+This paper names the choice, latent structure or declared structure, and
+makes the second legible enough to try. The ontological declaration and
+its ontic-break gate model a kernel-guarded, FDD-gated control loop for
+self-improving agents. The inversion is the point.
+
+\textbf{Use of Large Language Models.} Commercial APIs (Anthropic Claude,
+xAI Grok) assisted with writing. Boole, the coding agent evaluated in
+§\ref{sec:vega-boole}, is itself a commercial-LLM system
+behind the human approve/apply gate of §\ref{sec:ontic-gate}.
+No in-house models, no fine-tuning. Vega and Boole are internally
+deployed, not public inference. Counts in
+§\ref{sec:res-attribution} were recomputed from production
+\texttt{self\_improvements}.
 
 
 % MD-BODY-END — end of the MD-editable region.

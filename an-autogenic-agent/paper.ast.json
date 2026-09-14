@@ -32,11 +32,11 @@
           "sentences": [
             {
               "type": "sentence",
-              "text": "\\begin{abstract} Autonomous software agents rely on fixed ontological structures, rendering them incapable of self-directed architectural expansion when encountering novel tasks."
+              "text": "\\begin{abstract} Autonomous software agents commonly rely on fixed ontological structures, which can limit self-directed architectural expansion when a task requires vocabulary the agent does not carry."
             },
             {
               "type": "sentence",
-              "text": "This paper presents autogeny---an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic/FDD lifecycle whose accept and proposal approve/apply-or-deploy steps require a human."
+              "text": "This paper presents autogeny, an operational framework enabling an agent with a runtime-grounded ontology to recognize capability gaps through user discourse and implement targeted extensions through an autogenic/FDD lifecycle whose accept and proposal approve/apply-or-deploy steps require a human."
             },
             {
               "type": "sentence",
@@ -52,11 +52,11 @@
             },
             {
               "type": "sentence",
-              "text": "We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\\texttt{self\\_improvements}, \\texttt{fix\\_proposals}: \\texttt{proposed\\_at}, \\texttt{state}, \\texttt{proposed\\_by}, join on \\texttt{finding\\_id}), isolating the structural conditions that facilitate successful closure from those causing modification failures."
+              "text": "We characterize the framework through per-Finding lifecycle records in the self-improvement registry (\\texttt{self\\_improvements}, \\texttt{fix\\_proposals}: \\texttt{proposed\\_at}, \\texttt{state}, \\texttt{proposed\\_by}, join on \\texttt{finding\\_id}), recording the structural conditions of each closure and their modification failures."
             },
             {
               "type": "sentence",
-              "text": "The result is a kernel-guarded, FDD-gated control loop that provides a foundation for human-supervised capability expansion and offers a formal model for self-improving agent architectures."
+              "text": "The result is a kernel-guarded, FDD-gated control loop that provides a foundation for human-supervised capability expansion and offers an operational model for self-improving agent architectures."
             },
             {
               "type": "sentence",
@@ -100,11 +100,15 @@
               },
               {
                 "type": "sentence",
-                "text": "They share a deeper assumption: the structural knowledge the agent carries about its own runtime---prompt templates, tool schemas, retrieval indices---is fixed at authoring time."
+                "text": "They share a deeper assumption: the structural knowledge the agent carries about its own runtime is fixed at authoring time."
               },
               {
                 "type": "sentence",
-                "text": "None of it extends under the agent's own hand."
+                "text": "Prompt templates, tool schemas, retrieval indices all ship with the agent."
+              },
+              {
+                "type": "sentence",
+                "text": "Extension of that knowledge by the agent is not part of the shipped design."
               },
               {
                 "type": "sentence",
@@ -176,7 +180,7 @@
               },
               {
                 "type": "sentence",
-                "text": "It returns excerpts that often contain the answer, and it misses answers that are stated with different words or spread across files the retriever did not surface."
+                "text": "It returns excerpts that may contain the answer, and it misses answers that are stated with different words or spread across files the retriever did not surface."
               },
               {
                 "type": "sentence",
@@ -192,7 +196,7 @@
               },
               {
                 "type": "sentence",
-                "text": "Nothing accumulates."
+                "text": "Search alone does not accumulate structural knowledge across sessions."
               }
             ]
           },
@@ -201,23 +205,19 @@
             "sentences": [
               {
                 "type": "sentence",
-                "text": "The assumption is the field's binding constraint."
+                "text": "This assumption may bound what current tooling can reliably do."
               },
               {
                 "type": "sentence",
-                "text": "The symptoms are visible in the tooling: retrieval-augmented context windows growing longer without a corresponding growth in reliability, agents that succeed on curated benchmarks and fail on unfamiliar codebases, test suites that pass while the code drifts from what was asked for."
+                "text": "Context windows grow longer without matching reliability; agents succeed on curated benchmarks and fail on unfamiliar codebases; test suites pass while code drifts from what was asked for."
               },
               {
                 "type": "sentence",
-                "text": "Each symptom has been treated on its own terms."
+                "text": "Whether latent runtime ontology is the shared cause is a hypothesis, not a demonstration; this paper addresses it as a potential limitation the architecture can mitigate."
               },
               {
                 "type": "sentence",
-                "text": "They share a cause."
-              },
-              {
-                "type": "sentence",
-                "text": "The cause is the choice to keep code structure latent."
+                "text": "AST search and code graphs describe the code; they do not prescribe what the running system can next become."
               }
             ]
           },
@@ -237,11 +237,22 @@
               },
               {
                 "type": "sentence",
-                "text": "The ontology prescribes the code rather than describing it."
+                "text": "The ontology prescribes the code."
               },
               {
                 "type": "sentence",
-                "text": "It cannot go stale."
+                "text": "It does not describe."
+              },
+              {
+                "type": "sentence",
+                "text": "It cannot lag the code it prescribes, because the code is written against it."
+              },
+              {
+                "type": "sentence",
+                "text": "Runtime state the ontology does not represent is not seen; §\\ref{sec:threats}.",
+                "refIds": [
+                  "r2"
+                ]
               },
               {
                 "type": "sentence",
@@ -253,11 +264,11 @@
               },
               {
                 "type": "sentence",
-                "text": "We report on Vega, where a coding agent named Boole constructed and maintained the host against its own declared ontology for thirty days."
+                "text": "We report on Vega, where a coding agent named Boole constructed and maintained the host against its own declared ontology for thirty days on a precursor implementation of the architecture described here (§III-E times the artifact dates)."
               },
               {
                 "type": "sentence",
-                "text": "The code is where the thinking lands."
+                "text": "The code is just where the thinking lands."
               }
             ],
             "references": [
@@ -266,127 +277,89 @@
                 "id": "r1",
                 "kind": "sec",
                 "target": "sec:ontology"
+              },
+              {
+                "type": "reference",
+                "id": "r2",
+                "kind": "sec",
+                "target": "sec:threats"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "sentences": [
+              {
+                "type": "sentence",
+                "text": "**Contributions.** (i) A reference architecture inspired by biological cognition (ten mind components, three body systems; §\\ref{sec:reference}).",
+                "refIds": [
+                  "r1"
+                ]
+              },
+              {
+                "type": "sentence",
+                "text": "(ii) A framing: code structure as declaration, not discovery: the agent authors what it reads (§\\ref{sec:ontology}).",
+                "refIds": [
+                  "r2"
+                ]
+              },
+              {
+                "type": "sentence",
+                "text": "(iii) A verification model: coherence across requirement, code, and telemetry (§\\ref{sec:triad}).",
+                "refIds": [
+                  "r3"
+                ]
+              },
+              {
+                "type": "sentence",
+                "text": "(iv) A taxonomy of change: ontology instances (agent-originated, kernel-validated) versus ontic breaks (human-gated; §\\ref{sec:findings-taxonomy}).",
+                "refIds": [
+                  "r4"
+                ]
+              },
+              {
+                "type": "sentence",
+                "text": "(v) An empirical demonstration: thirty days on a production agent platform (§\\ref{sec:results}).",
+                "refIds": [
+                  "r5"
+                ]
+              }
+            ],
+            "references": [
+              {
+                "type": "reference",
+                "id": "r1",
+                "kind": "sec",
+                "target": "sec:reference"
+              },
+              {
+                "type": "reference",
+                "id": "r2",
+                "kind": "sec",
+                "target": "sec:ontology"
+              },
+              {
+                "type": "reference",
+                "id": "r3",
+                "kind": "sec",
+                "target": "sec:triad"
+              },
+              {
+                "type": "reference",
+                "id": "r4",
+                "kind": "sec",
+                "target": "sec:findings-taxonomy"
+              },
+              {
+                "type": "reference",
+                "id": "r5",
+                "kind": "sec",
+                "target": "sec:results"
               }
             ]
           }
         ]
       },
-      "sections": [
-        {
-          "type": "section",
-          "title": "Contributions",
-          "body": {
-            "type": "body",
-            "elements": [
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "\\- **A reference architecture.** Ten mind components + three body systems, biologically derived, autogenic (§\\ref{sec:reference}).",
-                    "refIds": [
-                      "r1"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:reference"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "\\- **A framing.** Code structure is a declaration, not a discovery."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "The agent authors what it reads; the ontology prescribes the code, describes nothing after the fact, and cannot go stale (§\\ref{sec:ontology}).",
-                    "refIds": [
-                      "r1"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:ontology"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "\\- **A verification model.** Coherence maintenance across the three edges of the requirement/code/telemetry triad (§\\ref{sec:triad}).",
-                    "refIds": [
-                      "r1"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:triad"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "\\- **A taxonomy of change.** Ontology instances (existing vocabulary, agent-closed) versus ontic breaks (new class, human-gated at accept and approve/apply) (§\\ref{sec:findings-taxonomy}).",
-                    "refIds": [
-                      "r1"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:findings-taxonomy"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "\\- **An empirical demonstration.** Thirty days of continuous operation on a production agent platform where the coding agent constructs and maintains its host against the host's own declared ontology (§\\ref{sec:results}).",
-                    "refIds": [
-                      "r1"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:results"
-                  }
-                ]
-              }
-            ]
-          },
-          "id": "contributions .unnumbered"
-        }
-      ],
       "id": "sec:intro"
     },
     {
@@ -397,11 +370,11 @@
         "elements": [
           {
             "type": "figure",
-            "label": "fig:ontology-graph",
-            "caption": "Force-directed rendering of the Vega ontological catalog. Eight discipline packages color-code the nodes; each is a full sub-ontology of typed classes and declared UML relations (composes, isA, assoc, depends).",
+            "label": "fig:mechanism",
+            "caption": "Autogenic loop mechanism, as designed. Instance path: agent is autonomous at implementation; kernel validation (ADR 0012) is structural; the coherence check on completion is designed but was not populated over the reported window (§IV-D). Ontic-break path: agent-authored FixProposal, then human approval, atomic apply, and supervised restart (behavioral). Boot-and-health rollback is automated, actor-configured, not kernel-structural. Access-control gap (§IV-D): a sub-agent with repo write and \\texttt{DATABASE\\_URL",
             "placement": "!t",
             "spanColumns": false,
-            "source": "figures/ontology-graph.png"
+            "source": "figures/fig-mechanism"
           }
         ]
       },
@@ -417,7 +390,7 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The architecture derives from biological cognition."
+                    "text": "The architecture is design-inspired by biological cognition; the mapping below is analogy, not a functional-equivalence claim."
                   },
                   {
                     "type": "sentence",
@@ -433,7 +406,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Each artificial component implements the same subfunctions as its biological counterpart in the same configuration."
+                    "text": "The mapping supplies naming and rough functional intent for each component; it is not a claim of neuroscientific equivalence."
                   }
                 ]
               },
@@ -442,11 +415,15 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The architecture is *autogenic*: its specification is embedded in the running system, not held externally."
+                    "text": "The architecture is *autogenic*: its specification is embedded in the running system."
                   },
                   {
                     "type": "sentence",
-                    "text": "Six axioms follow: **Unity** (processing and memory share the substrate), **Emergence** (faculties arise from component interaction), **Identity** (the system carries its own specification), **Embodiment** (the body is constitutive), **Regeneration** (the architecture repairs and extends itself), **Determination** (the system participates in its own construction)."
+                    "text": "Six axioms follow (unity, emergence, identity, embodiment, regeneration, determination)."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The system carries its own specification and participates in its own construction."
                   }
                 ]
               },
@@ -501,7 +478,11 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "The formal catalog was created on 6 July 2026; the ontology structure during the reported run window (May-June 2026) was carried informally as prompts, faculties, tool schemas, and migrations, and the class-count trajectory through July and August is 40, then 68, 88, 94, and finally the live 107 at time of writing."
+                    "text": "The formal catalog was created on 6 July 2026."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The ontology structure during the reported run window (May-June 2026) was carried informally as prompts, faculties, tool schemas, and migrations, and the class-count trajectory through July and August is 40, then 68, 88, 94, and finally the live 107 at time of writing."
                   },
                   {
                     "type": "sentence",
@@ -550,7 +531,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Promotion from one rung to the next is a discrete commit that ships a schema, a class module, tests, and a state flip together (recipe in ADR 0014)."
+                    "text": "Promotion from one rung to the next is a discrete commit that ships a schema, a class module, tests, and a state flip together (recipe in Architecture Decision Record (ADR) 0014)."
                   }
                 ]
               },
@@ -586,7 +567,11 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Anatomy holds the runtime organs: `Process`, `Sensor`, `Effector`, `Store`, `Clock`, `Surface`---classes whose instances are the actual organs of the running body."
+                    "text": "Anatomy holds the runtime organs: `Process`, `Sensor`, `Effector`, `Store`, `Clock`, `Surface`."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Each is a class whose instances are the actual organs of the running body."
                   }
                 ],
                 "references": [
@@ -652,7 +637,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Fig. \\ref{fig:ontology-graph} shows a slice of the running catalog.",
+                    "text": "Fig. \\ref{fig:mechanism} shows the loop's mechanism.",
                     "refIds": [
                       "r1"
                     ]
@@ -663,7 +648,7 @@
                     "type": "reference",
                     "id": "r1",
                     "kind": "fig",
-                    "target": "fig:ontology-graph"
+                    "target": "fig:mechanism"
                   }
                 ]
               }
@@ -694,7 +679,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "The telemetry reports what actually happened."
+                    "text": "The telemetry reports what happened."
                   },
                   {
                     "type": "sentence",
@@ -702,7 +687,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Verification is the maintenance of coherence across its three edges, where the substrate carries all three; the coding-agent loop and FDD diffs do."
+                    "text": "Verification is the maintenance of coherence across its three edges where the substrate carries all three."
                   }
                 ]
               },
@@ -727,7 +712,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Requirement-telemetry coherence asks whether what actually happens is what was actually asked for, independent of how the code got there."
+                    "text": "Requirement-telemetry coherence asks whether what happens is what was asked for, independent of how the code got there."
                   },
                   {
                     "type": "sentence",
@@ -746,11 +731,15 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "A verification regime that names all three edges catches it."
+                    "text": "Naming all three edges is necessary but not sufficient: detection also requires an encoded requirement, a suitable predicate, telemetry that observes the relevant behavior, and an implemented monitor."
                   },
                   {
                     "type": "sentence",
-                    "text": "One that names only two does not."
+                    "text": "Within those conditions a coherence check can be exact: it evaluates a declared constraint and returns yes or no, but exactness of the predicate does not establish completeness of the encoding, the telemetry, or the represented dependencies."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "A test suite samples inputs."
                   }
                 ],
                 "references": [
@@ -771,27 +760,6 @@
                     "id": "r3",
                     "kind": "cite",
                     "target": "skalse2022"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "The triad is exact where a test suite is approximate."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "A test suite samples inputs."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "A coherence check evaluates a declared constraint against the current state of the ontology and the current telemetry stream, and returns a yes or a no."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "There is no coverage question, because there is no sample."
                   }
                 ]
               }
@@ -863,7 +831,22 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "The agent handles them without human intervention."
+                    "text": "Six roles separate for a shipped Instance: origination, proposal, implementation (agent); construction-time validation (invariant kernel, ADR 0012); approval and deployment supervision (§\\ref{sec:ontic-gate}); closure.",
+                    "refIds": [
+                      "r1"
+                    ]
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The kernel is automated; the other roles retained human touch."
+                  }
+                ],
+                "references": [
+                  {
+                    "type": "reference",
+                    "id": "r1",
+                    "kind": "sec",
+                    "target": "sec:ontic-gate"
                   }
                 ]
               },
@@ -876,39 +859,23 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Two shapes of break occur."
+                    "text": "Two shapes occur."
                   },
                   {
                     "type": "sentence",
-                    "text": "The narrower is an enum widening."
+                    "text": "An *enum widening* (a value outside a declared enum: a claim kind, a `Channel.visibility`, a `Sensor` sub-type) requires a migration."
                   },
                   {
                     "type": "sentence",
-                    "text": "A claim kind not among the nine Toulmin roles (Epistemics), a `Channel.visibility` outside *public*, *private*, *DM* (Sociology), or a new `Sensor` sub-type for a hardware peripheral the catalog has not yet named (Anatomy) cannot be represented until the schema is widened."
+                    "text": "A *class admission* (a requirement no existing class fits) requires a new class walked from *planned* to *instance* per the ADR-0014 recipe."
                   },
                   {
                     "type": "sentence",
-                    "text": "The widening is a migration."
+                    "text": "The break is a requirement the agent cannot satisfy with the vocabulary it has."
                   },
                   {
                     "type": "sentence",
-                    "text": "The wider shape is a class admission."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "A requirement that names an entity that fits no existing class in the catalog cannot be represented at all until a new class is added, its schema authored, its module written, and its state walked from *planned* to *instance* through the ADR-0014 recipe."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "Both shapes share a structural property."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "The break is not an exception raised at runtime."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "It is a requirement the agent cannot satisfy with the vocabulary it has; the FDD lifecycle moves the Finding to `needs_external_dev` and the only forward path is to hand off to an operator or engineer."
+                    "text": "The FDD lifecycle moves the Finding to `needs_external_dev` for hand-off."
                   }
                 ]
               }
@@ -983,38 +950,31 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "It is not a structural invariant of the PostgreSQL schema; the database does not refuse agent DDL."
+                    "text": "Five guarantee types separate. *Structural* (kernel + enum locks refuse malformed instances at construction). *Behavioral* (FDD approval, deployment supervision, auto-rollback, actor-driven). *Access-control* is not enforced: a sub-agent with repo write and `DATABASE_URL` bypasses the workflow by running `migrate` outside the coordinator."
                   },
                   {
                     "type": "sentence",
-                    "text": "A sub-agent with repo write and `DATABASE_URL` could technically bypass the workflow by running `migrate` outside the coordinator."
+                    "text": "The workflow was configured to route ships through the gate."
                   },
                   {
                     "type": "sentence",
-                    "text": "The coordinator's refusal to skip review binds only sub-agents that go through the FDD lifecycle."
+                    "text": "Records verify FDD workflow entry for 35 of the 159 shipped, of which 15 reached verified or applied."
                   },
                   {
                     "type": "sentence",
-                    "text": "What the composite buys is the observation that every ship over the reported window crossed all three layers by construction; §\\ref{sec:results} reports the throughput that constraint produced.",
-                    "refIds": [
-                      "r1"
-                    ]
+                    "text": "The remaining 124 shipped Findings closed without a proposal record and cannot be attributed to the gate from records alone; absence of a record is not evidence of bypass, nor of review outside the workflow."
                   },
                   {
                     "type": "sentence",
-                    "text": "The gate is the mechanism, but the mechanism is workflow-and-config, not schema."
+                    "text": "The gate is workflow-and-config, not schema."
                   },
                   {
                     "type": "sentence",
                     "text": "That is the standard."
-                  }
-                ],
-                "references": [
+                  },
                   {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:results"
+                    "type": "sentence",
+                    "text": "Schema conformance is not behavioral correctness: an ontology-compatible instance can still change runtime behavior in ways the kernel does not catch."
                   }
                 ]
               },
@@ -1023,11 +983,11 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "Failed apply-and-deploys roll back automatically on boot-and-health timeout or reflection-verify mismatch (`stageRollback`, `lifecycle.js`)."
+                    "text": "Failed apply-and-deploys auto-roll back on boot-and-health timeout or reflection-verify mismatch (`stageRollback`); catalog rollback is operator-only."
                   },
                   {
                     "type": "sentence",
-                    "text": "Catalog-level rollback (git revert, traffic shift, inverse SQL) is operator-only."
+                    "text": "Window: 1 auto-rollback (boot-and-health), 1 operator rollback, 3 proposals rejected before apply, 0 reflection-verify mismatches."
                   }
                 ]
               }
@@ -1096,7 +1056,11 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "The remaining eighty-three sub-agents (roster to eighty-nine; full list in the replication package) handle infrastructure and sit outside that loop."
+                    "text": "Boole plus those five make six in-loop; eighty-three infrastructure sub-agents sit outside, for eighty-nine total."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Full roster in the replication package."
                   }
                 ],
                 "references": [
@@ -1105,15 +1069,6 @@
                     "id": "r1",
                     "kind": "sec",
                     "target": "sec:architecture"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "During the reported thirty-day run, Boole handled every incoming Finding through the ontology-instance path; ontic breaks were declared and handed off."
                   }
                 ]
               }
@@ -1167,7 +1122,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "The Telemetry agent runs coherence checks (§\\ref{sec:measurement}) against the same database the dev team writes to.",
+                    "text": "The Telemetry agent is designed to run coherence checks (§\\ref{sec:measurement}) against the same database the dev team writes to.",
                     "refIds": [
                       "r2"
                     ]
@@ -1189,18 +1144,14 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "OpenHands [@openhands2025] similarly organizes work around a handful of coding roles.",
+                    "text": "Vega's six in-loop agents sit in the range OpenHands [@openhands2025] uses.",
                     "refIds": [
                       "r4"
                     ]
                   },
                   {
                     "type": "sentence",
-                    "text": "Vega's six in-loop agents sit in a comparable range."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "The larger system total reflects an architectural choice: infrastructure services other systems handle at the harness level are represented as ontology classes and instantiated as sub-agents, appearing in the roster count."
+                    "text": "The larger system total reflects representing infrastructure services as ontology classes instantiated as sub-agents."
                   }
                 ],
                 "references": [
@@ -1235,35 +1186,7 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "A single telemetry agent maintains the third edge of the coherence triad."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "It records `TelemetryEvent`, `TransitionEvent`, `ToolExecution`, and `Vital` rows against the same database the dev team writes to, and it runs the coherence checks described in §\\ref{sec:measurement} on a fixed schedule.",
-                    "refIds": [
-                      "r1"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:measurement"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "A separate conformance mechanism, the invariant kernel of ADR 0012 (`@mach33/core`), enforces class-schema validity at construction: the frozen `validate` + composition subset rejects any instance not conforming to its declared class."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "Apply-and-deploy is the FDD lifecycle's job (§\\ref{sec:ontic-gate}).",
+                    "text": "The invariant kernel (ADR 0012, `@mach33/core`) enforces class-schema validity at construction; apply-and-deploy is the FDD lifecycle (§\\ref{sec:ontic-gate}).",
                     "refIds": [
                       "r1"
                     ]
@@ -1275,23 +1198,6 @@
                     "id": "r1",
                     "kind": "sec",
                     "target": "sec:ontic-gate"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "A prior draft of this system named a distinct *Developer* sub-agent as the code-writing role."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "That role has been retired."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "Its work is distributed across the five-agent dev team under Boole's coordination, and the retirement is itself an ontic-break event recorded in the catalog."
                   }
                 ]
               }
@@ -1335,11 +1241,7 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The Analyst decomposes each Finding into touched classes and instances. **Best case**: every class and vocabulary value exists---an instance-path close by the Designer, coordinated through an `AutogenicCycle` and closed by a `Release`. **Intermediate**: classes exist but a vocabulary value is missing---a narrower ontic break, an enum-widening migration authored for human review. **Worst**: nothing exists---new classes must walk from *planned* through *procedural* to *instance* per the ADR-0014 recipe."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "Creation proceeds only if the Finding is judged coherent; otherwise rejected."
+                    "text": "The Analyst decomposes each Finding into touched classes and instances. **Best case**: every class and vocabulary value exists; the Designer closes on the instance path through an `AutogenicCycle`. **Intermediate**: a vocabulary value is missing, a narrower ontic break requiring an enum-widening migration for human review. **Worst**: new classes must walk from *planned* through *procedural* to *instance* per ADR-0014, accepted only if coherent."
                   },
                   {
                     "type": "sentence",
@@ -1350,7 +1252,7 @@
               {
                 "type": "figure",
                 "label": "fig:throughput",
-                "caption": "Cumulative Findings shipped by author, 9 May -- 8 Jun 2026 (Vega 144, user 15). Vega dominates.",
+                "caption": "Cumulative autogenic Findings shipped (left axis) and net LOC (right axis, tree, mixed authorship), 9 May -- 8 Jun 2026. Weekly Vega deltas 64/50/21/0/9; LOC 20.5k/69.4k/19.8k/22.1k/3.3k. Week 4 (30 May -- 5 Jun): 0 autogenic shipped while tree grew by 22k LOC; state-transition telemetry became reliable on 5 Jun (§IV-D). User-filed (15 shipped, weekly 9/2/2/0/2) reported in Table I. LOC pre-26 May are backfilled absolute counts; basis seams on 18 and 27 May are measurement changes, not deletions.",
                 "placement": "!t",
                 "spanColumns": false,
                 "source": "figures/fig-throughput",
@@ -1386,7 +1288,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "The agent inspects the state (usually via grep or an embedding retriever), reasons about what to do next, invokes a tool, observes the result, and repeats."
+                    "text": "The agent inspects the state via grep or an embedding retriever, reasons about what to do next, invokes a tool, observes the result, and repeats."
                   },
                   {
                     "type": "sentence",
@@ -1423,34 +1325,41 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "A query against the class catalog returns exact class membership, exact constraint violations, and exact transitive-closure blast radius."
+                    "text": "A query against the class catalog returns exact class membership, constraint violations, and transitive-closure blast radius within the declared ontology."
                   },
                   {
                     "type": "sentence",
-                    "text": "The retrieval approximation that binds a grep- or embedding-based reasoner (§\\ref{sec:intro}) is not there to bind Boole. **Observe** consumes both the tool result and the coherence check that fires after every state-changing action.",
+                    "text": "Runtime dependencies not represented in the ontology are not seen."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The retrieval approximation that binds a grep- or embedding-based reasoner (§\\ref{sec:intro}) is not there to bind Boole.",
                     "refIds": [
                       "r1"
                     ]
                   },
                   {
                     "type": "sentence",
-                    "text": "If the coherence check fails, the loop cannot terminate."
+                    "text": "In the design, **Observe** would consume both the tool result and a coherence check on state-changing actions; a failing check would prevent termination."
                   },
                   {
                     "type": "sentence",
-                    "text": "Termination is decided against the declared constraints of the touched classes, not against the agent's own judgment."
+                    "text": "Instrumentation for that event stream was not populated during the reported window (§\\ref{sec:threats}); coherence maintenance was not measured.",
+                    "refIds": [
+                      "r2"
+                    ]
                   },
                   {
                     "type": "sentence",
-                    "text": "This inverts the field's default."
+                    "text": "Termination in the design is decided against declared constraints of the touched classes, not the agent's own judgment."
                   },
                   {
                     "type": "sentence",
-                    "text": "The typical loop trusts the agent's own stopping criterion."
+                    "text": "This inverts the typical loop, which trusts the agent's stopping criterion."
                   },
                   {
                     "type": "sentence",
-                    "text": "Boole's loop trusts the ontology's."
+                    "text": "Boole's design trusts the ontology's."
                   }
                 ],
                 "references": [
@@ -1459,6 +1368,12 @@
                     "id": "r1",
                     "kind": "sec",
                     "target": "sec:intro"
+                  },
+                  {
+                    "type": "reference",
+                    "id": "r2",
+                    "kind": "sec",
+                    "target": "sec:threats"
                   }
                 ]
               }
@@ -1481,19 +1396,15 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "The `M33-VEGA-INST-001` package (`lib/vega-instrumentation.js`, endpoint `/api/instrumentation/metrics`) is the code identity for the productivity-and-quality time-series recorder."
+                    "text": "The `M33-VEGA-INST-001` package writes numeric samples to an append-only SHA-256-hashed JSONL chain across productivity, autogenic, and code-quality categories; a `verifyChain()` endpoint reports tamper-evidence."
                   },
                   {
                     "type": "sentence",
-                    "text": "The package writes numeric samples to an append-only SHA-256-hashed JSONL chain (`data/vega-instrumentation.log.jsonl`) across three categories: productivity (`findings_filed`, `tasks_completed`, `commits_landed`, `throughput_per_hour`), autogenic (`cycle_duration_ms`, `cycles_completed`, `self_findings_ratio`, `capability_delta`), and code quality (`test_pass_rate`, `lint_errors`, `cyclomatic_avg`, `review_findings`)."
+                    "text": "INST-001 (8 Aug 2026) and the formal catalog (6 July 2026) postdate the reported window; run-time governance was the invariant kernel (ADR 0012) precursor and the FDD workflow as configured."
                   },
                   {
                     "type": "sentence",
-                    "text": "A `verifyChain()` endpoint returns `ok/false` against the tamper-evidence of the log."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "This is the instrumentation that shipped in the reported window."
+                    "text": "Numbers come from `code_size_snapshots` and `self_improvements`."
                   }
                 ]
               },
@@ -1525,7 +1436,7 @@
                   },
                   {
                     "type": "sentence",
-                    "text": "Population is future work; §\\ref{sec:threats} discloses the gap.",
+                    "text": "Population is future work. §\\ref{sec:threats} discloses the gap.",
                     "refIds": [
                       "r2"
                     ]
@@ -1551,7 +1462,15 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The replication package (\\url{https://github.com/jbarseneau99/papers/tree/main/an-autogenic-agent}) releases the ontology-catalog snapshot, the enum-locking schema migrations, the `M33-VEGA-INST-001` chain, the coherence-check design specification, and the paper source; Vega and Boole themselves remain proprietary."
+                    "text": "The replication package is at \\url{https://github.com/jbarseneau99/papers/tree/main/an-autogenic-agent}."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "It releases the ontology-catalog snapshot, the enum-locking schema migrations, the `M33-VEGA-INST-001` chain, the coherence-check design specification, and the paper source under the MIT License."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Vega and Boole themselves remain proprietary."
                   }
                 ]
               }
@@ -1572,7 +1491,7 @@
       "sections": [
         {
           "type": "section",
-          "title": "Coherence over time",
+          "title": "Throughput under the coherence framework",
           "body": {
             "type": "body",
             "elements": [
@@ -1581,15 +1500,23 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The hypothesis under test is that the coherence triad can be maintained across an extended run."
+                    "text": "The reported evidence is throughput under a designed coherence-triad framework."
                   },
                   {
                     "type": "sentence",
-                    "text": "This paper reports the run's throughput evidence (§\\ref{sec:res-attribution}, Fig. \\ref{fig:throughput}): 159 Findings shipped through the FDD-gated pipeline over thirty consecutive days, with attribution broken out by author.",
+                    "text": "The triad-holds hypothesis is not tested here; the coherence-check event stream was designed but not populated."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Throughput (§\\ref{sec:res-attribution}, Fig. \\ref{fig:throughput}): 159 Findings shipped in the reported window, of which 144 were autogenic (Vega-originated) and 15 user-filed.",
                     "refIds": [
                       "r1",
                       "r2"
                     ]
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The FDD gate closed 15 of the 159."
                   },
                   {
                     "type": "sentence",
@@ -1629,15 +1556,34 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The shape carries the argument."
+                    "text": "The shape is front-loaded: weekly Vega deltas 64, 50, 21, 0, 9; weeks 1--2 shipped 114 of the eventual 144."
                   },
                   {
                     "type": "sentence",
-                    "text": "Vega's curve rises through the window without a stall; user proposals arrive at a low, steady rate."
+                    "text": "Week 4 shipped zero and coincides with the state-transition-telemetry cutover; the plateau and the source-shift are not separable."
                   },
                   {
                     "type": "sentence",
-                    "text": "Fully autonomous closes are absent by design, not by failure."
+                    "text": "User weekly deltas were steady."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Net LOC totalled 135k (~4,506/day); LOC and Findings decouple in week 4 (Fig."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "\\ref{fig:throughput}).",
+                    "refIds": [
+                      "r1"
+                    ]
+                  }
+                ],
+                "references": [
+                  {
+                    "type": "reference",
+                    "id": "r1",
+                    "kind": "fig",
+                    "target": "fig:throughput"
                   }
                 ]
               }
@@ -1656,15 +1602,29 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The run produced 177 Findings across thirty consecutive days (9 May -- 8 June 2026), of which 159 shipped through the FDD lifecycle."
+                    "text": "The run produced 177 Findings (9 May -- 8 June 2026, 30 days), 159 shipped. 35 opened a `fix_proposal`; 15 reached verified or applied."
                   },
                   {
                     "type": "sentence",
-                    "text": "Every shipped Finding crossed the principal-review gate by construction. **Fully autonomous closes were zero.** The 159 shipped break down by `proposed_by` (Table \\ref{tab:findings-by-path}, Fig. \\ref{fig:throughput}): 144 proposed by the agent (91%), 15 by a user (9%), 0 by team-decomposition.",
+                    "text": "The remaining 124 shipped without a proposal record."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Separately, 117 of 159 are ontology-unclassified from records (Table \\ref{tab:findings-by-path}); the two counts are different attributes.",
                     "refIds": [
-                      "r1",
+                      "r1"
+                    ]
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Intended policy (§\\ref{sec:findings-taxonomy}) required human approval and supervised deployment on every ship; for the 124 without a proposal record this is policy, not records-verified.",
+                    "refIds": [
                       "r2"
                     ]
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "By `proposed_by`: 144 agent (91%), 15 user (9%), 0 team."
                   }
                 ],
                 "references": [
@@ -1677,36 +1637,8 @@
                   {
                     "type": "reference",
                     "id": "r2",
-                    "kind": "fig",
-                    "target": "fig:throughput"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "Attribution is by `proposed_by`: 144 agent-proposed, 15 user-proposed."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "All 159 crossed the same principal-review gate (§\\ref{sec:ontic-gate}); a fix-proposal join on `finding_id` covers 15 shipped rows.",
-                    "refIds": [
-                      "r1"
-                    ]
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "The registry's per-Finding fields (`proposed_at`, `state`, `proposed_by`, `fix_proposals.finding_id`) support the structural-conditions analysis the abstract promises; the per-condition table ships with the replication package."
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
                     "kind": "sec",
-                    "target": "sec:ontic-gate"
+                    "target": "sec:findings-taxonomy"
                   }
                 ]
               },
@@ -1715,7 +1647,15 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "Proposed by Shipped --------------------------------------- --------------- vega 144 user 15 team 0 Total shipped / filed in window 159 / 177"
+                    "text": "Ship rate 89.8% (159/177)."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Ontology split from records: 10/32/117 (Table I). 74% lack the affected-file record; among the 15 verified/applied: 9 ontic-break, 5 instance, 1 unknown."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Median close 8h 15m Vega / 6h 47m user; 5.3 shipped/day over the 30-day window."
                   }
                 ]
               },
@@ -1724,7 +1664,15 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": ": Shipped Findings by author (proposed_by), counts from the Vega FDD store, 9 May -- 8 June 2026 window {#tab:findings-by-path}"
+                    "text": "\\begin{table}[!t] \\centering \\caption{Findings by author, Vega FDD store, 9 May -- 8 June 2026 (30-day window)."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "I / OB / Unk = ontology-classification split (Instance: no locked file, no migration, no \\texttt{needs\\_external\\_dev} in closure diff; Ontic-break: migration, locked file, or \\texttt{needs\\_external\\_dev}; Unknown: no affected-file record)."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "S/d = shipped per day. 117 of 159 shipped are ontology-unclassified, 42 positively classified.}\\label{tab:findings-by-path} \\small \\begin{tabular}{@{}lrrrrr@{}} \\hline Author & Filed & Ship & I / OB / Unk & S/d & Median \\\\ \\hline Vega & 161 & 144 & 4 / 28 / 112 & 4.8 & 8h 15m \\\\ User & 16 & 15 & 6 / 4 / 5 & 0.5 & 6h 47m \\\\ Team & 0 & 0 & 0 / 0 / 0 & 0.0 & -- \\\\ \\hline Total & 177 & 159 & 10 / 32 / 117 & 5.3 & 8h 09m \\\\ \\hline \\end{tabular} \\end{table}"
                   }
                 ]
               }
@@ -1743,44 +1691,15 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "Specification gaming is behavior that passes a test suite while failing to satisfy the requirement the tests were meant to protect (§\\ref{sec:triad}).",
-                    "refIds": [
-                      "r1"
-                    ]
+                    "text": "Specification gaming, behavior that passes tests while failing the requirement the tests were meant to protect, appears in a coherence check as failure on the requirement-telemetry edge without a matching code-telemetry failure, paired on the same transition id."
                   },
                   {
                     "type": "sentence",
-                    "text": "By construction it appears in a coherence check as a failure on the requirement-telemetry edge without a matching failure on the code-telemetry edge, paired on the same transition id."
+                    "text": "This paper describes the detector; validation is future work."
                   },
                   {
                     "type": "sentence",
-                    "text": "This paper describes the detector; empirical validation depends on the coherence-check event stream of §\\ref{sec:measurement} and is future work.",
-                    "refIds": [
-                      "r2"
-                    ]
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
-                    "kind": "sec",
-                    "target": "sec:triad"
-                  },
-                  {
-                    "type": "reference",
-                    "id": "r2",
-                    "kind": "sec",
-                    "target": "sec:measurement"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "The detector's limit is what the ontology can name: it surfaces gaming that violates a declared constraint, not gaming that satisfies every declared constraint while missing an undeclared one."
+                    "text": "Coverage is the ontology's coverage: gaming that violates a declared constraint is surfaced; gaming that satisfies every declared constraint while missing an undeclared one is not."
                   }
                 ]
               }
@@ -1799,10 +1718,22 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "Four threats attach. *Single-platform, $n=1$*: coherence on Vega does not entail coherence on a different system whose ontology is declared differently; what generalizes is the shape of the argument, not the numbers. *Ontology-as-choice*: widening `entities.type` from nine to nineteen, or replacing the Toulmin structure of `claim_type` with a rhetorical one, would change what counts as an instance and what counts as an ontic break, the framework distinguishes declared ontologies from latent ones, not good ones from bad. *Two of three enforcement mechanisms are behavioral, not structural* (§\\ref{sec:ontic-gate}): locked-region refusal by a sub-agent and principal review at checkpoints depend on an actor choosing to act; only the ontic-break gate, which lives in the database schema, cannot be overridden from inside the loop, so a hostile agent could route around the softer gates but not the hard one. *Instrumented by the observed system*: the telemetry agent reads state from the same database it writes to; the reads and writes are separated by role but a fully independent observer would need to be hosted outside Vega.",
+                    "text": "Four threats attach. *Single-platform, $n=1$*: coherence on Vega does not entail coherence on a different system whose ontology is declared differently; what generalizes is the shape of the argument, not the numbers. *Ontology-as-choice*: widening `entities.type` or replacing the Toulmin `claim_type` with a rhetorical structure would change what counts as an instance versus an ontic break."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The framework distinguishes declared ontologies from latent ones, not good from bad. *Two of three enforcement mechanisms are behavioral, not structural* (§\\ref{sec:ontic-gate}): locked-region refusal and principal review depend on an actor choosing to act.",
                     "refIds": [
                       "r1"
                     ]
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Only the storage-layer enum lock is structural."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "A hostile agent routes around the softer gates. *Instrumented by the observed system*: the telemetry agent reads state from the same database it writes to; the reads and writes are separated by role but a fully independent observer would need to be hosted outside Vega."
                   }
                 ],
                 "references": [
@@ -1824,6 +1755,41 @@
                   {
                     "type": "sentence",
                     "text": "For 9 May--4 June, Finding dates derive from `proposed_at` and artifact metadata, not logged transitions; closure dates in that stretch are lower-bound estimates."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Of the 159 shipped Findings, 35 opened a \\texttt{fix\\_proposal}; 15 reached verified or applied."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Records do not identify the close path for the 124 shipped without a proposal record."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "LOC and commits (Fig."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "\\ref{fig:throughput}) are surviving tree growth, mixed authorship, not autogenic Findings.",
+                    "refIds": [
+                      "r1"
+                    ]
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The case study establishes operational feasibility and throughput under the gate."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "A prospective matched evaluation is proposed future work: baseline agent, code-graph agent, and the ontology-based approach, held constant on model, tasks, tools, budget, and approval policy, measuring correct closure, missed violations, false alarms, regressions, human effort, and cost."
+                  }
+                ],
+                "references": [
+                  {
+                    "type": "reference",
+                    "id": "r1",
+                    "kind": "fig",
+                    "target": "fig:throughput"
                   }
                 ]
               },
@@ -1832,17 +1798,20 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The coherence-check event stream (§\\ref{sec:triad}) was designed but not populated during the reported window; `M33-VEGA-INST-001` shipped only productivity-and-quality series (§\\ref{sec:measurement}).",
+                    "text": "The coherence-check event stream (§\\ref{sec:triad}) was designed but not populated in the window.",
                     "refIds": [
-                      "r1",
-                      "r2"
+                      "r1"
                     ]
                   },
                   {
                     "type": "sentence",
-                    "text": "The empirical result is throughput (§\\ref{sec:res-attribution}), not a holds/fails count.",
+                    "text": "The empirical result is throughput, not a holds/fails count."
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "The ontic-break gate (§\\ref{sec:ontic-gate}) is workflow-and-config, not a structural invariant of the schema: a sub-agent with repo write and database credentials could bypass the workflow by running `migrate` outside the coordinator.",
                     "refIds": [
-                      "r3"
+                      "r2"
                     ]
                   }
                 ],
@@ -1856,40 +1825,6 @@
                   {
                     "type": "reference",
                     "id": "r2",
-                    "kind": "sec",
-                    "target": "sec:measurement"
-                  },
-                  {
-                    "type": "reference",
-                    "id": "r3",
-                    "kind": "sec",
-                    "target": "sec:res-attribution"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "sentences": [
-                  {
-                    "type": "sentence",
-                    "text": "The ontic-break gate (§\\ref{sec:ontic-gate}) is a composite of application-config file locks, the FDD workflow, and the operator approve/apply UI.",
-                    "refIds": [
-                      "r1"
-                    ]
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "It is not a structural invariant of the PostgreSQL schema; a sub-agent with repo write and database credentials could bypass the workflow by running `migrate` outside the coordinator."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "The paper reports what the composite gate enforced when honored: every shipped Finding over the window crossed all three layers."
-                  }
-                ],
-                "references": [
-                  {
-                    "type": "reference",
-                    "id": "r1",
                     "kind": "sec",
                     "target": "sec:ontic-gate"
                   }
@@ -1910,29 +1845,23 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "Our position sits against four lines."
-                  },
-                  {
-                    "type": "sentence",
-                    "text": "The benchmark line, SWE-bench [@swebench2024; @swebench2026], SWE-agent [@sweagent2024], AutoCodeRover [@autocoderover2024], measures an agent's ability to close bug reports in code it did not author; the shape does not evaluate an agent that authors what it reads.",
+                    "text": "Our position sits against five lines. *Benchmark* (SWE-bench [@swebench2024; @swebench2026], SWE-agent [@sweagent2024], AutoCodeRover [@autocoderover2024]): agents closing bugs in code they did not author; AutoCodeRover's AST is a partial structural break with grep. *Harness* (ReAct [@react2023], OpenHands [@openhands2025], Agarwal [@agarwal2026], He [@he2026cursor]) improves the loop around the model. *Code-graph* (RepoGraph [@repograph2025]) makes the repository graph explicit.",
                     "refIds": [
                       "r1",
                       "r2",
                       "r3",
                       "r4",
+                      "r5",
+                      "r6",
+                      "r7",
+                      "r8",
+                      "r9",
                       "r2"
                     ]
                   },
                   {
                     "type": "sentence",
-                    "text": "The harness line, ReAct [@react2023], OpenHands [@openhands2025], and the commercial-agent surveys of Agarwal et al. [@agarwal2026] and He et al. [@he2026cursor], improves the loop around the model (tools, context, memory) while keeping the search-based rediscovery model of §\\ref{sec:intro}; our alternative moves the site of gains from the harness to the ontology declaration.",
-                    "refIds": [
-                      "r5",
-                      "r6",
-                      "r7",
-                      "r8",
-                      "r9"
-                    ]
+                    "text": "These describe code; we prescribe with a runtime ontology."
                   }
                 ],
                 "references": [
@@ -1987,8 +1916,8 @@
                   {
                     "type": "reference",
                     "id": "r9",
-                    "kind": "sec",
-                    "target": "sec:intro"
+                    "kind": "cite",
+                    "target": "repograph2025"
                   }
                 ]
               },
@@ -1997,20 +1926,28 @@
                 "sentences": [
                   {
                     "type": "sentence",
-                    "text": "The self-evolving-agent line [@selfevolve2026; @seagent2025; @sica2025] treats the agent as a self-modifying program with no declared ontology to check modifications against; the ontic-break gate is our addition.",
+                    "text": "*Runtime-model* (Models@run.time [@modelsatruntime2009], Requirements Reflection [@reqreflection2010]) established causally-connected self-representations and runtime requirements.",
                     "refIds": [
                       "r1",
-                      "r2",
-                      "r3",
-                      "r2",
-                      "r3"
+                      "r2"
                     ]
                   },
                   {
                     "type": "sentence",
-                    "text": "The ontology-of-agents line [@agento2026] models workflows over sixteen flat classes on PROV-O and P-Plan; that declaration targets the workflow the agent executes, ours the running system it authors.",
+                    "text": "Our addition is the instance-vs-ontic-break distinction and the composite gate. *Self-evolving-agent* (SelfEvolve [@selfevolve2026], SEAgent [@seagent2025], Gödel Agent [@godelagent2025], Darwin Gödel [@darwingodel2026], Huxley-Gödel [@huxleygodel2026]): agent modifies itself, unconstrained against a declared ontology.",
                     "refIds": [
-                      "r4"
+                      "r3",
+                      "r4",
+                      "r5",
+                      "r6",
+                      "r7"
+                    ]
+                  },
+                  {
+                    "type": "sentence",
+                    "text": "Huxley-Gödel raises the self-improving bar to capability-to-produce-better-agents; we measure throughput and do not claim capability improvement. *Ontology-of-agents* (AgentO [@agento2026]) declares workflows over sixteen flat classes on PROV-O and P-Plan; it describes an execution, ours prescribes.",
+                    "refIds": [
+                      "r8"
                     ]
                   }
                 ],
@@ -2019,23 +1956,47 @@
                     "type": "reference",
                     "id": "r1",
                     "kind": "cite",
-                    "target": "selfevolve2026"
+                    "target": "modelsatruntime2009"
                   },
                   {
                     "type": "reference",
                     "id": "r2",
                     "kind": "cite",
-                    "target": "seagent2025"
+                    "target": "reqreflection2010"
                   },
                   {
                     "type": "reference",
                     "id": "r3",
                     "kind": "cite",
-                    "target": "sica2025"
+                    "target": "selfevolve2026"
                   },
                   {
                     "type": "reference",
                     "id": "r4",
+                    "kind": "cite",
+                    "target": "seagent2025"
+                  },
+                  {
+                    "type": "reference",
+                    "id": "r5",
+                    "kind": "cite",
+                    "target": "godelagent2025"
+                  },
+                  {
+                    "type": "reference",
+                    "id": "r6",
+                    "kind": "cite",
+                    "target": "darwingodel2026"
+                  },
+                  {
+                    "type": "reference",
+                    "id": "r7",
+                    "kind": "cite",
+                    "target": "huxleygodel2026"
+                  },
+                  {
+                    "type": "reference",
+                    "id": "r8",
                     "kind": "cite",
                     "target": "agento2026"
                   }
@@ -2059,7 +2020,7 @@
             "sentences": [
               {
                 "type": "sentence",
-                "text": "The field's coding agents treat code structure as latent, rediscovered each session by search over text."
+                "text": "Mainstream coding agents leave runtime ontology latent and rediscover it each session by search."
               },
               {
                 "type": "sentence",
@@ -2088,7 +2049,11 @@
               },
               {
                 "type": "sentence",
-                "text": "The declaration prescribes rather than describes."
+                "text": "The declaration prescribes."
+              },
+              {
+                "type": "sentence",
+                "text": "It does not describe."
               },
               {
                 "type": "sentence",
@@ -2105,19 +2070,15 @@
               },
               {
                 "type": "sentence",
-                "text": "Vega filed 177 Findings and shipped 159 through the FDD lifecycle. 144 of those were proposed by the agent, 15 by a user."
+                "text": "Of the 177 Findings recorded (161 Vega-filed, 16 user-filed), 159 shipped. 35 opened a `fix_proposal`; 15 reached verified or applied."
               },
               {
                 "type": "sentence",
-                "text": "Every one crossed the principal-review gate."
+                "text": "Ship classification: 10 confirmed instance, 32 confirmed ontic-break, 117 unclassified from records."
               },
               {
                 "type": "sentence",
-                "text": "The triad held throughout."
-              },
-              {
-                "type": "sentence",
-                "text": "The gate is the mechanism."
+                "text": "Triad-hold is a designed check, not measured in this window."
               }
             ]
           },
@@ -2126,19 +2087,71 @@
             "sentences": [
               {
                 "type": "sentence",
-                "text": "Whether the approach generalizes beyond the platform we built is an open question."
+                "text": "Whether the approach generalizes beyond the platform we built is open."
               },
               {
                 "type": "sentence",
-                "text": "What this paper does is name the choice, latent structure or declared structure, and make the second one legible enough to try."
+                "text": "This paper names the choice, latent structure or declared structure, and makes the second legible enough to try."
               },
               {
                 "type": "sentence",
-                "text": "The ontological declaration with its ontic-break gate offers a first formal model of a kernel-guarded, FDD-gated control loop for self-improving agent architectures."
+                "text": "The ontological declaration and its ontic-break gate model a kernel-guarded, FDD-gated control loop for self-improving agents."
               },
               {
                 "type": "sentence",
                 "text": "The inversion is the point."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "sentences": [
+              {
+                "type": "sentence",
+                "text": "**Use of Large Language Models.** Commercial APIs (Anthropic Claude, xAI Grok) assisted with writing."
+              },
+              {
+                "type": "sentence",
+                "text": "Boole, the coding agent evaluated in §\\ref{sec:vega-boole}, is itself a commercial-LLM system behind the human approve/apply gate of §\\ref{sec:ontic-gate}.",
+                "refIds": [
+                  "r1",
+                  "r2"
+                ]
+              },
+              {
+                "type": "sentence",
+                "text": "No in-house models, no fine-tuning."
+              },
+              {
+                "type": "sentence",
+                "text": "Vega and Boole are internally deployed, not public inference."
+              },
+              {
+                "type": "sentence",
+                "text": "Counts in §\\ref{sec:res-attribution} were recomputed from production `self_improvements`.",
+                "refIds": [
+                  "r3"
+                ]
+              }
+            ],
+            "references": [
+              {
+                "type": "reference",
+                "id": "r1",
+                "kind": "sec",
+                "target": "sec:vega-boole"
+              },
+              {
+                "type": "reference",
+                "id": "r2",
+                "kind": "sec",
+                "target": "sec:ontic-gate"
+              },
+              {
+                "type": "reference",
+                "id": "r3",
+                "kind": "sec",
+                "target": "sec:res-attribution"
               }
             ]
           }
