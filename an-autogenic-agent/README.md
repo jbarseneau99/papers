@@ -44,8 +44,8 @@ structure, without releasing the runtime.
 
 ## Citation
 
-    J. B. Arseneau, "An Autogenic Agent," in Proc. IEEE Int. Conf. on
-    Agents (ICA), Kumamoto, Japan, 2026.
+    J. B. Arseneau, "An Autogenic Agent," unpublished manuscript,
+    Mach33 Group, 2026.
 
 ## Contact
 
